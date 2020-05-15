@@ -358,7 +358,6 @@ class AbuseIPDB
         Console::log(Console::text('     Confidence score: [' , 'white') . 
                      Console::text($report->data->abuseConfidenceScore, $scoreforegroundColor, $scoreBackgroundColor).
                      Console::text(']', 'white'));
-        Console::log(Console::text('     Request time [', 'white') . Console::text($time, 'green') . Console::text(']', 'white'));
         Console::log();
         self::printFooter($time);
 
@@ -411,8 +410,8 @@ class AbuseIPDB
 
         // score and data color (depending of abuseConfidenceScore)
         $score = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
-        $defaultColor = 'lightgreen';
-        $scoreforegroundColor = 'lightgreen';
+        $defaultColor = 'green';
+        $scoreforegroundColor = 'green';
         $scoreBackgroundColor = '';
 
         if (intval($score) > 1 ){
@@ -463,7 +462,8 @@ class AbuseIPDB
                 Console::log($line);
             }
         } else {
-            Console::log(Console::text('   Not reported ') . Console::text(' ✓', 'green'));
+            $day = $maxAge > 1 ? 'in last'. $maxAge . 'days': 'today';
+            Console::log(Console::text('   Not reported ' . $day) . Console::text(' ✓', 'green'));
 
         }
 
