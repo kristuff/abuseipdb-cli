@@ -51,14 +51,12 @@ class AbuseIPDB
      */
     public static function start($arguments)
     {
-        // hello
-        self::printBanner();
-
         // Create en new instance of \ApiManager with the given config file
         self::$api = ApiManager::fromConfigFile(__DIR__ .'/../config/config.json');
     
         // required at least one valid argument
         if ( empty($arguments)){
+            self::printBanner();
             self::error('No valid arguments given.');
             self::printHelp();       
             exit(1);
@@ -66,18 +64,21 @@ class AbuseIPDB
 
          // prints help ?
          if (self::inArguments($arguments, 'h', 'help')){
+            self::printBanner();
             self::printHelp();
             exit(0);
         }
 
         // prints config ?
         if (self::inArguments($arguments, 'g', 'config')){
+            self::printBanner();
             self::printConfig();
             exit(0);
         } 
 
         // prints catgeories ?
         if (self::inArguments($arguments, 'l', 'list')){
+            self::printBanner();
             self::printCategories();
             exit(0);
         } 
@@ -95,6 +96,7 @@ class AbuseIPDB
         }
 
         // no valid arguments given, close program
+        self::printBanner();
         self::error('invalid arguments');
         exit(1);
     }
@@ -168,17 +170,19 @@ class AbuseIPDB
         Console::log(' Current configuration: ', 'white');
         Console::log(' ----------------------', 'white');
         Console::log();
+
+        // print config
         Console::log('  user_id:[' . Console::text($conf['userId'], 'cyan') . ']');   
         Console::log('  api_key:[' . Console::text($conf['apiKey'], 'cyan') . ']');
 
-      // todo report cat default 
+        // todo report cat default 
 
         // todo not used for now
-      //   Console::log('  self_ips:');
+        //   Console::log('  self_ips:');
       
-      //  foreach($conf['selfIps'] as $ip){
-      //      Console::log('    [' .  Console::text($ip, 'cyan')    . ']');   
-      //  }
+        //  foreach($conf['selfIps'] as $ip){
+        //      Console::log('    [' .  Console::text($ip, 'cyan')    . ']');   
+        //  }
         
         Console::log();   
     }
@@ -204,36 +208,37 @@ class AbuseIPDB
 
         $rowHeaders = [
             // columns names                      column lenght
-            Console::text('ShortName', 'white')      => 15, 
-            Console::text('Id', 'white')             => 5, 
-            Console::text('Full name', 'white')      => 18,
-            Console::text('Can be alone?', 'white')  => 15
+            Console::text('ShortName', 'lightgrey')      => 15, 
+            Console::text('Id', 'lightgrey')             => 5, 
+            Console::text('Full name', 'lightgrey')      => 18,
+            Console::text('Can be alone?', 'lightgrey')  => 15
         ];
 
         // table header
-  //    Console::log(' '. Console::tableSeparator($rowHeaders));    // top line             |-----------------------  ...
-        Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            |---------|---------|---  ...
-        Console::log(' '. Console::tableRow($rowHeaders));          // columns headers      | foo     | bar     |---  ...
-        Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            |---------|---------|---  ...
-         
+        Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            
+        Console::log(' '. Console::tableRow($rowHeaders));          // columns headers      
+        Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            
+
         // tables rows
         foreach ($categories as $cat){
 
-            $id = Console::text($cat[1], 'blue');
+            $id = Console::text($cat[1], 'cyan');
             $standalone =  $cat[3] ? Console::text('true', 'lightgreen') :  Console::text('false', 'lightred');
+            $shorName = Console::text($cat[0], 'white');
+            $fullName = Console::text($cat[2], 'white');
 
             Console::log(
                 ' '. 
                 Console::TableRowStart().  
-                Console::TableRowCell( $cat[0] , 15).  
+                Console::TableRowCell( $shorName , 15).  
                 Console::TableRowCell( $id , 5, Console::ALIGN_CENTER).  
-                Console::TableRowCell( $cat[2] , 18).  
+                Console::TableRowCell( $fullName , 18).  
                 Console::TableRowCell( $standalone , 15,  Console::ALIGN_CENTER)  
             );
         }
 
         // table end
-        Console::log(' '. Console::tableSeparator($rowHeaders));   // saparator               |-----------------------  ...
+        Console::log(' '. Console::tableRowSeparator($rowHeaders)); 
         Console::log();   
     }
 
@@ -270,29 +275,32 @@ class AbuseIPDB
         }
 
         // banner for report
-        Console::log(Console::pad(' ', 14 + strlen($ip), '-'), 'white');
-        Console::log(Console::text(' Report ip: [', 'white') . Console::text($ip, 'cyan') . Console::text(']', 'white'));
-        Console::log(Console::pad(' ', 14 + strlen($ip), '-'), 'white');
+        Console::log();
+        Console::log(Console::pad('  ', 14 + strlen($ip), '-'), 'white');
+        Console::log(Console::text('  Report ip: [', 'white') . Console::text($ip, 'cyan') . Console::text(']', 'white'));
+        Console::log(Console::pad('  ', 14 + strlen($ip), '-'), 'white');
         Console::log();
    
         // temporary message
         Console::reLog(Console::text('    waiting for api response', 'white') . Console::text(' ... ', 'green'));
 
-        // do request 
-        $timeStart = microtime(true);                               // request startime 
+        // ----------------
+        // Peforms request 
+        // ----------------
+        $timeStart = microtime(true); // request startime 
         
         $report = null;
         
         try {
-            $report = self::$api->report($ip, $cats, $message);     // perform check
+            $report = self::$api->report($ip, $cats, $message);     
         
         } catch (Exception $e) {
             self::error($e->getMessage());
             exit(1);
         }
         
-        $timeEnd = microtime(true);                             // request end time 
-        $time = $timeEnd - $timeStart;                          // request time
+        $timeEnd = microtime(true);  // request end time 
+        $time = $timeEnd - $timeStart; // request time
 
         // done, we clear previous the message. Makes sure we clear the whole line with long string
         Console::reLog('                                                        ');
@@ -306,7 +314,7 @@ class AbuseIPDB
         }
         
         if (isset($report) && isset($report->errors)){
-            // top error bdage    
+            // top error baadge    
             Console::log(' ' .   Console::text('ERROR','white', 'red'));
 
             // errors is an array, could have more than one error..
@@ -332,7 +340,7 @@ class AbuseIPDB
         // ----------------------------------------------
 
         // color score
-        $score = $report->data->abuseConfidenceScore;
+        $score = empty($report->data->abuseConfidenceScore) ? 0 : $report->data->abuseConfidenceScore;
         $scoreforegroundColor = 'green';
         $scoreBackgroundColor = '';
 
@@ -346,12 +354,14 @@ class AbuseIPDB
         } 
 
         // Print result
-        Console::log(Console::text('  ✓ ', 'green') . Console::text(' IP: ' . $ip .' successfully reported', 'white'));
+        Console::log(Console::text('  ✓ ', 'green') . Console::text(' IP: [' . $ip .'] successfully reported', 'white'));
         Console::log(Console::text('     Confidence score: [' , 'white') . 
                      Console::text($report->data->abuseConfidenceScore, $scoreforegroundColor, $scoreBackgroundColor).
                      Console::text(']', 'white'));
         Console::log(Console::text('     Request time [', 'white') . Console::text($time, 'green') . Console::text(']', 'white'));
         Console::log();
+        self::printFooter($time);
+
     }
 
     /**
@@ -381,9 +391,10 @@ class AbuseIPDB
         }
 
         // banner for check
-        Console::log(Console::pad(' ', 13 + strlen($ip), '-'), 'white');
-        Console::log(Console::text(' Check ip: [', 'white') . Console::text($ip, 'cyan') . Console::text(']', 'white'));
-        Console::log(Console::pad(' ', 13 + strlen($ip), '-'), 'white');
+        Console::log();
+        Console::log(Console::pad('  ', 13 + strlen($ip), '-'), 'white');
+        Console::log(Console::text('  Check ip: [', 'white') . Console::text($ip, 'cyan') . Console::text(']', 'white'));
+        Console::log(Console::pad('  ', 13 + strlen($ip), '-'), 'white');
         Console::log();
    
         // temporary message
@@ -399,7 +410,7 @@ class AbuseIPDB
         Console::reLog('                                                        ');
 
         // score and data color (depending of abuseConfidenceScore)
-        $score = $check->data->abuseConfidenceScore;
+        $score = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
         $defaultColor = 'lightgreen';
         $scoreforegroundColor = 'lightgreen';
         $scoreBackgroundColor = '';
@@ -414,34 +425,72 @@ class AbuseIPDB
             $scoreforegroundColor = 'white';
             $scoreBackgroundColor = 'red';
         } 
+  
+        self::printResult('   Confidence score', $check->data->abuseConfidenceScore, $scoreforegroundColor, $scoreBackgroundColor);
+//      self::printResult('   isPublic', $check->data->isPublic, $defaultColor);
+//      self::printResult('   ipVersion', $check->data->ipVersion, $defaultColor);
+        self::printResult('   Whitelisted', $check->data->isWhitelisted ? 'true': 'false', $defaultColor);
+        self::printResult('   Country code', $check->data->countryCode, $defaultColor);
+        self::printResult('   Country name', $check->data->countryName, $defaultColor);
+        self::printResult('   Usage type', $check->data->usageType, $defaultColor);
+        self::printResult('   Domain', $check->data->domain, $defaultColor);
+        self::printResult('   Total reports', $check->data->totalReports, $defaultColor);
+        self::printResult('   Distinct report users', $check->data->numDistinctUsers, $defaultColor);
+        self::printResult('   Last reported at', $check->data->lastReportedAt, $defaultColor);
 
-        self::printResult('   isPublic', $check->data->isPublic, $defaultColor);
-        self::printResult('   ipVersion', $check->data->ipVersion, $defaultColor);
-        self::printResult('   isWhitelisted', $check->data->isWhitelisted, $defaultColor);
-        self::printResult('   abuseConfidenceScore', $check->data->abuseConfidenceScore, $scoreforegroundColor, $scoreBackgroundColor);
-        self::printResult('   countryCode', $check->data->countryCode, $defaultColor);
-        self::printResult('   countryName', $check->data->countryName, $defaultColor);
-        self::printResult('   usageType', $check->data->usageType, $defaultColor);
-        self::printResult('   domain', $check->data->domain, $defaultColor);
-        self::printResult('   totalReports', $check->data->totalReports, $defaultColor);
-        self::printResult('   numDistinctUsers', $check->data->numDistinctUsers, $defaultColor);
-        self::printResult('   lastReportedAt', $check->data->lastReportedAt, $defaultColor);
-        Console::log();
-        Console::log(Console::text(' Request time [', 'lightgrey') . Console::text($time, 'green') . Console::text(']', 'lightgrey'));
-        Console::log();
+        if (isset($check->data->reports) && $check->data->reports > 0){
+            Console::log('   Last reports:');
+
+            // reset color for last reports
+            $defaultColor = 'lightmagenta';
+        
+            $numberReport = 0;
+            foreach ($check->data->reports as $lastReport){
+                $numberReport++;
+
+                // todo optIon for max reports
+                if ($numberReport === 5) break;
+
+                $categories = [];
+                foreach($lastReport->categories as $catId){
+                    $categories[] = self::$api->getCategoryNamebyId($catId)[0];
+                }
+                
+                $line  = self::printResult('    -> reported at', $lastReport->reportedAt, $defaultColor, '', false);
+                $line .= self::printResult(' by user', $lastReport->reporterId, $defaultColor, '', false);
+                $line .= self::printResult(' from', $lastReport->reporterCountryCode  . ' ' . $lastReport->reporterCountryName, $defaultColor, '', false);
+                $line .= self::printResult(' with categories', implode(', ', $categories) , $defaultColor, '', false);
+                Console::log($line);
+            }
+        } else {
+            Console::log(Console::text('   Not reported ') . Console::text(' ✓', 'green'));
+
+        }
+
+        // footer
+        self::printFooter($time);
     }
 
     /**
-     * Print a result value 
+     * Prints/gets a result value 
      * 
      * @access protected
      * @static
      * 
-     * @return void
+     * @return void|string
      */
-    protected static function printResult($text, $value, $foregroundColor = 'lightred', $backgroundColor = '')
+    protected static function printResult($text, $value, string $foregroundColor = 'lightred', string $backgroundColor = '', bool $print = true)
     {
-        Console::log('' . $text .': [' . Console::text($value, $foregroundColor, $backgroundColor) . ']');
+        // do not print null/blank values
+        if (!empty($value)){
+
+            // new line??
+            if ($print){
+                Console::log($text .': [' . Console::text($value, $foregroundColor, $backgroundColor) . ']');
+            } else {
+               return Console::text($text .': [' . Console::text($value, $foregroundColor, $backgroundColor) . ']');
+            }
+        }
     }
 
     /**
@@ -458,6 +507,27 @@ class AbuseIPDB
         Console::log(' Kristuff\AbuseIPDB v0.1', 'grey'); 
         Console::log(Console::text(' Made with ', 'grey') . Console::text('♥', 'red') . Console::text(' in France', 'grey')); 
         Console::log(' © 2020 Kristuff', 'grey'); 
+        Console::log();    
+    }
+
+    /**
+     * Print footer banner
+     * 
+     * @access protected
+     * @static
+     * 
+     * @return void
+     */
+    protected static function printFooter(string $requestTime)
+    {
+        Console::log();    
+        Console::log('  ---------------------------------------', 'grey');    
+        if (!empty($requestTime)){
+            Console::log(Console::text('  Request time: ', 'grey') . Console::text($requestTime, 'lightgrey') .  Console::text('', 'grey'));
+        }
+        Console::log(Console::text('  Kristuff\AbuseIPDB ', 'grey') . Console::text('v0.1', 'lightgrey')); 
+        Console::log(Console::text('  Made with ', 'grey') . Console::text('♥', 'red') . Console::text(' in France | © 2020 Kristuff', 'grey')); 
+        Console::log('  ---------------------------------------', 'grey');    
         Console::log();    
     }
 
@@ -508,7 +578,6 @@ class AbuseIPDB
     {
           return array_key_exists($shortArg, $arguments) ? $arguments[$shortArg] : $arguments[$longArg]; 
     }
-
 }
 
 ?>
