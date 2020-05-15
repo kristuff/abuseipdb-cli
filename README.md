@@ -10,10 +10,10 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 
 Features
 --------
-- Single check request **✓** 
-- Single report request **✓** 
-- Check block request *TODO* 
-- Bulk Report request *TODO* 
+**✓** Single check request 
+**✓** Single report request
+*\[TODO\]* Check block request  
+*\[TODO\]* Bulk Report request
 
 
 Requirements
