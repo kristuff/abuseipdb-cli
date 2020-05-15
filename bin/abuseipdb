@@ -144,7 +144,7 @@ class AbuseIPDB
         Console::log(Console::text('   -c, --categories ', 'white') . Console::text('categories', 'yellow', 'underline')); 
         Console::log('       For a report request, defines the report category(ies). Categories must be separate by a comma.', 'lightgrey');
         Console::log('       Some catgeries cannot be used alone. A category can be represented by its shortname or by its', 'lightgrey');
-        Console::log(Console::text('       id. Use ','lightgrey')  . Console::text('abuseipdb -l', 'grey') . Console::text(' to print the list','lightgrey'));
+        Console::log(Console::text('       id. Use ','lightgrey')  . Console::text('abuseipdb -l', 'white') . Console::text(' to print the categories list.','lightgrey'));
         Console::log();    
         Console::log(Console::text('   -m, --message ', 'white') . Console::text('message', 'yellow', 'underline')); 
         Console::log('       For a report request, defines the message to send with report. Message is required for all', 'lightgrey');
@@ -164,9 +164,12 @@ class AbuseIPDB
     {
         // print current config and exit
         $conf = self::$api->getConfig();
-            
-        Console::log(' ' . Console::text('Current configuration:', 'white', 'blue', 'underline'));   
-        Console::log();  
+
+        // banner
+        Console::log(' ----------------------', 'white');
+        Console::log(' Current configuration: ', 'white');
+        Console::log(' ----------------------', 'white');
+        Console::log();
         Console::log('  user_id:[' . Console::text($conf['userId'], 'cyan') . ']');   
         Console::log('  api_key:[' . Console::text($conf['apiKey'], 'cyan') . ']');
 
@@ -179,7 +182,7 @@ class AbuseIPDB
       //      Console::log('    [' .  Console::text($ip, 'cyan')    . ']');   
       //  }
         
-      Console::log();   
+        Console::log();   
     }
 
     /**
@@ -192,31 +195,42 @@ class AbuseIPDB
      */
     protected static function printCategories()
     {
-        $cats = self::$api->getCategories();
-
-        Console::log(' ' . Console::text('Report categories list:', 'white', 'blue', 'underline'));   
+        // banner for report
+        Console::log(' -----------------------', 'white');
+        Console::log(' Report categories list: ', 'white');
+        Console::log(' -----------------------', 'white');
         Console::log();
 
-        $rowHeaders = [
+        // get categories
+        $categories = self::$api->getCategories();
 
-            // columns names (with color..)        column lenght
-            Console::text('Id', 'white')            => 2, 
-            Console::text('shortName', 'white')     => 15, 
-            Console::text('Full name', 'white')     => 20
+        $rowHeaders = [
+            // columns names                      column lenght
+            Console::text('ShortName', 'white')      => 15, 
+            Console::text('Id', 'white')             => 5, 
+            Console::text('Full name', 'white')      => 18,
+            Console::text('Can be alone?', 'white')  => 15
         ];
 
-        Console::log(' '. Console::tableSeparator($rowHeaders));    // top line             |-----------------------  ...
+        // table header
+  //    Console::log(' '. Console::tableSeparator($rowHeaders));    // top line             |-----------------------  ...
+        Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            |---------|---------|---  ...
         Console::log(' '. Console::tableRow($rowHeaders));          // columns headers      | foo     | bar     |---  ...
         Console::log(' '. Console::tableRowSeparator($rowHeaders)); // saparator            |---------|---------|---  ...
          
         // tables rows
-        foreach ($cats as $key => $value){
+        foreach ($categories as $cat){
+
+            $id = Console::text($cat[1], 'blue');
+            $standalone =  $cat[3] ? Console::text('true', 'lightgreen') :  Console::text('false', 'lightred');
+
             Console::log(
                 ' '. 
                 Console::TableRowStart().  
-                Console::TableRowCell($value[0] , 2).  
-                Console::TableRowCell($key, 15).  
-                Console::TableRowCell($value[1] , 20)  
+                Console::TableRowCell( $cat[0] , 15).  
+                Console::TableRowCell( $id , 5, Console::ALIGN_CENTER).  
+                Console::TableRowCell( $cat[2] , 18).  
+                Console::TableRowCell( $standalone , 15,  Console::ALIGN_CENTER)  
             );
         }
 

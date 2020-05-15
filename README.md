@@ -1,7 +1,12 @@
 # kristuff/abuse-ipdb
-The CLI version of [kristuff/abuse-ipdb](https://github.com/kristuff/abuse-ipdb), a mini library to work with the AbuseIPDB api V2
+The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a mini library to work with the AbuseIPDB API V2
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/build-status/master)
+[![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
+[![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
+![sample-report)](doc/sample-report.png)
 
 
 Requirements
@@ -12,7 +17,7 @@ Requirements
 
 Dependencies
 ------------
-- [kristuff/abuse-ipdb](https://github.com/kristuff/abuse-ipdb) The library to communicate withe ABUSEipdb api V2
+- [kristuff/abuse-ipdb](https://github.com/kristuff/abuse-ipdb) The library to communicate with the abuseIPDB API v2
 - [kristuff/mishell](https://github.com/kristuff/mishell) Used to build cli colored/tables reports
 
 Install
@@ -47,7 +52,7 @@ Install
     # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
     ```
 
-    Otherwise, replace `abuseipdb` with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the follonwing examples.
+    Otherwise, replace `abuseipdb` with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the following examples.
 
 
 Documentation
@@ -55,88 +60,25 @@ Documentation
 
 ## 1. Usage
 
+![help)](doc/help.png)
+
 You can print the help with:
 ```bash
 abuseipdb -h
 ```
 
-
-    ## SYNOPSIS:
-    ```bash
-    abuseipdb -C ip [-d days]
-    abuseipdb -R ip -c categories -m message
-    ```
-
-    ## OPTIONS:
-    ```
-    -h, --help
-        Prints the current help. If given, all next arguments are ignored.
-
-    -g, --config
-        Prints the current config. If given, all next arguments are ignored.
-
-    -l, --list
-        Prints the list report categories. If given, all next arguments are ignored.
-
-    -C, --check ip
-        Performs a check request for the given IP adress. A valid IPv4 or IPv6 address is required.
-
-    -d, --days days
-        For a check request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
-
-    -R, --report ip
-        Performs a report request for the given IP adress. A valid IPv4 or IPv6 address is required.
-
-    -c, --categories categories
-        For a report request, defines the report category(ies). Categories must be separate by a comma.
-        Some catgeries cannot be used alone. A category can be represented by its shortname or by its
-        id. Use abuse-ipdb -l to print the list
-
-    -m, --message message
-        For a report request, defines the message to send with report. Message is required for all
-        reports request.
-    ```
-
 ## 2. Report categories list
+
+![categories)](doc/categories.png)
 
 You can print the categories list with:
 ```bash
 abuseipdb -l
 ```
 
-```
- |---------------------------------------------|
- | shortName       | Id | Full name            |
- |-----------------+----+----------------------|
- | dns-c           | 1  | DNS Compromise       |
- | dns-p           | 2  | DNS Poisoning        |
- | fraud-orders    | 3  | Fraud Orders         |
- | ddos            | 4  | DDoS Attack          |
- | ftp-bf          | 5  | FTP Brute-Force      |
- | pingdeath       | 6  | Ping of Death        |
- | phishing        | 7  | Phishing             |
- | fraudvoip       | 8  | Fraud VoIP           |
- | openproxy       | 9  | Open Proxy           |
- | webspam         | 10 | Web Spam             |
- | emailspam       | 11 | Email Spam           |
- | blogspam        | 12 | Blog Spam            |
- | vpnip           | 13 | VPN IP               |
- | scan            | 14 | Port Scan            |
- | hack            | 15 | Hacking              |
- | sql             | 16 | SQL Injection        |
- | spoof           | 17 | Spoofing             |
- | brute           | 18 | Brute-Force          |
- | badbot          | 19 | Bad Web Bot          |
- | explhost        | 20 | Exploited Host       |
- | webattack       | 21 | Web App Attack       |
- | ssh             | 22 | SSH                  |
- | oit             | 23 | IoT Targeted         |
- |---------------------------------------------|
-```
-
 ## 3. Samples
 
->  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is private IP address, you can use for api testing. Make sure you **do not** blacklist an internal IP, otherwise you won't have a good day! 
+>  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is a private IP address you can use for api testing. Make sure you **do not** blacklist an internal IP on your server, otherwise you won't have a good day! 
 
 Check for ip `127.0.0.1` (default is on last 30 days): 
 ```bash
@@ -148,11 +90,12 @@ Check for ip `127.0.0.1` in last 365 days:
 abuseipdb -R 127.0.0.1 -d 365
 ```
 
+
 Report ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force :(`: 
 ```bash
-# with cat shortnames
+# with categories shortname
 abuseipdb -R 127.0.0.1  -c "ssh,brute"  -m "ssh brute force :("
-# or with cat ids
+# or with categories id
 abuseipdb -R 127.0.0.1  -c "22,18"  -m "ssh brute force :("
 ```
 
