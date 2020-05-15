@@ -14,16 +14,6 @@ Features
 - **✓** Single check request
 - **✓** Single report request
 
-Coming soon or ...
-------------------
-- *\[TODO\]* Check block request  
-- *\[TODO\]* Bulk report request
-- *\[TODO\]* Option for max number of last reports displayed. Currently 5
-- *\[TODO\]* Displays for max number of last reports displayed
-- *\[TODO\]* Check for color support
-- *\[TODO\]* Check for unicode support 
-- *\[TODO\]* Option less verbose?...
-- *\[TODO\]* For options in config: default catgegories, selfs ips to make sure to exclude from message, ...
 
 
 Requirements
@@ -179,6 +169,14 @@ abuseipdb  -m 'ssh brute force :(' -c ssh,brute  -R 127.0.0.1
 abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force :("
 
 ```
+
+Coming soon or ...
+------------------
+- *\[TODO\]* *Check block request*  
+- *\[TODO\]* *Bulk report request*
+- *\[TODO\]* *Option for max number of last reports displayed. Currently 5*
+- *\[TODO\]* *Check for unicode support*
+- *\[TODO\]* *More options in config: default catgegories, verbose, selfs ips to make sure to exclude from message, ...*
 
 
 License
