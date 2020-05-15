@@ -6,14 +6,25 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
-![sample-report)](doc/sample-report.png)
+![sample-check-internal-ip)](doc/sample-check-internal-ip.png)
+![sample-check-bad-ip)](doc/sample-check-bad-ip.png)
 
 Features
 --------
 - **✓** Single check request
 - **✓** Single report request
+
+Coming soon or ...
+------------------
 - *\[TODO\]* Check block request  
 - *\[TODO\]* Bulk report request
+- *\[TODO\]* Option for max number of last reports displayed. Currently 5
+- *\[TODO\]* Displays for max number of last reports displayed
+- *\[TODO\]* Check for color support
+- *\[TODO\]* Check for unicode support 
+- *\[TODO\]* Option less verbose?...
+- *\[TODO\]* For options in config: default catgegories, selfs ips to make sure to exclude from message, ...
+
 
 Requirements
 ------------
@@ -52,10 +63,10 @@ Install
     $ chmod u+x /YOUR_PATH/abuseipdb-cli/bin/abuseipdb
     ```
 
-4. To use it more easily from shell, you could deploy the bin file to `/usr/local/bin/` (need root or administrator permissions)
+4. To use it more easily, you could deploy the bin file to `/usr/local/bin/` (need **root** or **administrator** permissions)
 
     ```bash
-    # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
+    ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
     ```
 
     Otherwise, replace `abuseipdb` with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the following examples.
@@ -157,14 +168,16 @@ Check the ip `127.0.0.1` in last 365 days:
 abuseipdb -R 127.0.0.1 -d 365
 ```
 
-
 Report the ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force :(`: 
 ```bash
 # with categories shortname
+# arguments order does not matter, these two lines do the same
 abuseipdb -R 127.0.0.1  -c ssh,brute  -m "ssh brute force :("
+abuseipdb  -m 'ssh brute force :(' -c ssh,brute  -R 127.0.0.1
 
 # or with categories id
 abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force :("
+
 ```
 
 
