@@ -24,10 +24,8 @@ require_once realpath(__DIR__) .'/../vendor/autoload.php';
 use Kristuff\AbuseIPDB\ApiManager;
 use Kristuff\Mishell\Console;
 
-// define arguments
+// define arguments and start our app
 $arguments = getopt('glC:d:R:c:m:h', ['config', 'list', 'check:', 'days:', 'report:', 'categories', 'message', 'help']);
-
-// start AbuseIPDB program
 AbuseIPDB::start($arguments);
 
 /**
@@ -278,7 +276,7 @@ class AbuseIPDB
         Console::log();
    
         // temporary message
-        Console::reLog(Console::text(' waiting for api response', 'white') . Console::text(' ... ', 'green'));
+        Console::reLog(Console::text('    waiting for api response', 'white') . Console::text(' ... ', 'green'));
 
         // do request 
         $timeStart = microtime(true);                               // request startime 
@@ -349,7 +347,7 @@ class AbuseIPDB
 
         // Print result
         Console::log(Console::text('  ✓ ', 'green') . Console::text(' IP: ' . $ip .' successfully reported', 'white'));
-        Console::log(Console::text('     Confidence Score: [' , 'white') . 
+        Console::log(Console::text('     Confidence score: [' , 'white') . 
                      Console::text($report->data->abuseConfidenceScore, $scoreforegroundColor, $scoreBackgroundColor).
                      Console::text(']', 'white'));
         Console::log(Console::text('     Request time [', 'white') . Console::text($time, 'green') . Console::text(']', 'white'));
@@ -389,7 +387,7 @@ class AbuseIPDB
         Console::log();
    
         // temporary message
-        Console::reLog(Console::text(' waiting for api response', 'white') . Console::text(' ... ', 'green'));
+        Console::reLog(Console::text('    waiting for api response', 'white') . Console::text(' ... ', 'green'));
 
         // do request 
         $timeStart = microtime(true);                       // request startime 

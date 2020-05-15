@@ -87,7 +87,7 @@ abuseipdb -l
 
 ## 3. Samples
 
->  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is a private IP address you can use for api testing. Make sure you **do not** blacklist an internal IP on your server, otherwise you won't have a good day! 
+>  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is a private IP address you can use for check/report api testing. Make sure you **do not** blacklist an internal IP on your server, otherwise you won't have a good day! 
 
 Check for ip `127.0.0.1` (default is on last 30 days): 
 ```bash
@@ -103,9 +103,10 @@ abuseipdb -R 127.0.0.1 -d 365
 Report ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force :(`: 
 ```bash
 # with categories shortname
-abuseipdb -R 127.0.0.1  -c "ssh,brute"  -m "ssh brute force :("
+abuseipdb -R 127.0.0.1  -c ssh,brute  -m "ssh brute force :("
+
 # or with categories id
-abuseipdb -R 127.0.0.1  -c "22,18"  -m "ssh brute force :("
+abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force :("
 ```
 
 
