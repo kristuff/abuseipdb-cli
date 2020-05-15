@@ -8,6 +8,13 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 
 ![sample-report)](doc/sample-report.png)
 
+Features
+--------
+- Single check request **✓** 
+- Single report request **✓** 
+- Check block request *TODO* 
+- Bulk Report request *TODO* 
+
 
 Requirements
 ------------
