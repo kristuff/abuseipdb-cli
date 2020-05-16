@@ -348,7 +348,7 @@ class AbuseIPDB
         // ----------------------------------------------
         $score = empty($report->data->abuseConfidenceScore) ? 0 : $report->data->abuseConfidenceScore;
         Console::log(Console::text('  ✓ ', 'green') . Console::text(' IP: [' . $ip .'] successfully reported', 'white'));
-        self::PrintScore('     Confidence score', $score, 'white');
+        self::printScore('     Confidence score', $score, 'white');
         self::printFooter($time);
 
     }
@@ -403,7 +403,7 @@ class AbuseIPDB
         $defaultColor = 'green';
         if (intval($score) > 1 ) { $defaultColor = 'brown';   } 
         if (intval($score) > 50 ){ $defaultColor = 'lightred' ;} 
-        self::PrintScore('   Confidence score', $score);
+        self::printScore('   Confidence score', $score);
 
 //      self::printResult('   isPublic', $check->data->isPublic, $defaultColor);
 //      self::printResult('   ipVersion', $check->data->ipVersion, $defaultColor);
@@ -424,10 +424,12 @@ class AbuseIPDB
         self::printResult('   Domain:         ', $check->data->domain, $defaultColor);
 
         $nbReport = $check->data->totalReports && is_numeric($check->data->totalReports) ? intval($check->data->totalReports) : 0;
-        $line  = self::printResult('   Total reports:  ', $nbReport, $defaultColor, '', false);
-        $line .= self::printResult(' from:', $check->data->numDistinctUsers, $defaultColor, '', false);
-        $line .= $nbReport> 0 ? ' distinct users': ' user';
-        Console::log($line);
+        if ($nbReport > 0 ){
+            $line  = self::printResult('   Total reports:  ', $nbReport, $defaultColor, '', false);
+            $line .= self::printResult(' from:', $check->data->numDistinctUsers, $defaultColor, '', false);
+            $line .= $nbReport > 0 ? ' distinct users': ' user';
+            Console::log($line);
+        }
         self::printResult('   Last reported at', $check->data->lastReportedAt, $defaultColor);
 
         // print last reports
@@ -484,7 +486,7 @@ class AbuseIPDB
      * 
      * @return void
      */
-    protected static function PrintScore(string $text, int $score, string $textColor = '')
+    protected static function printScore(string $text, int $score, string $textColor = '')
     {
         $scoreforegroundColor = 'white';
         $scoreBackgroundColor = 'green';

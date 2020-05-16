@@ -56,7 +56,7 @@ Install
 4. To use it more easily, you could deploy the bin file to `/usr/local/bin/` (need **root** or **administrator** permissions)
 
     ```bash
-    ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
+     # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
     ```
 
     Otherwise, replace `abuseipdb` with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the following examples.
