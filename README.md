@@ -6,9 +6,9 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
-![sample-report)](doc/sample-report.gif)
-![sample-check-internal-ip)](doc/sample-check-internal-ip.png)
-![sample-check-bad-ip)](doc/sample-check-bad-ip.png)
+![sample-report](doc/sample-report.gif)
+![sample-check-internal-ip](doc/sample-check-internal-ip.png)
+![sample-check-bad-ip](doc/sample-check-bad-ip.png)
 
 Features
 --------
@@ -93,7 +93,7 @@ You can print the help with:
 ```bash
 abuseipdb -h
 ```
-![help)](doc/help.png)
+![help](doc/help.png)
 
 ## 2. Report categories list
  ShortName       | Id    | Full name          | Can be alone?  
