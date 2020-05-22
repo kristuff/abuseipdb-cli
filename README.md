@@ -9,7 +9,7 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 ![sample-report](doc/sample-report.gif)
 ![sample-check-internal-ip](doc/sample-check-internal-ip.png)
 ![sample-check-bad-ip](doc/sample-check-bad-ip.png)
-![sample-report-internal-ip](doc/sample-check-bad-ip.png)
+![sample-report-internal-ip](doc/sample-report-internal-ip.png)
 
 Features
 --------
