@@ -1,0 +1,17 @@
+{
+    "name": "kristuff/abuseipdb-cli",
+    "description": "A library to work with the AbuseIPDB api V2 (cli version)",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kristuff",
+            "homepage": "https://github.com/kristuff"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "kristuff/mishell": "^1.3-stable",
+        "kristuff/abuseipdb": ">=0.1-stable"
+    }
+}
