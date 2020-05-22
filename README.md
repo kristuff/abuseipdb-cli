@@ -6,6 +6,7 @@ The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), 
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
+![sample-report)](doc/sample-report.gif)
 ![sample-check-internal-ip)](doc/sample-check-internal-ip.png)
 ![sample-check-bad-ip)](doc/sample-check-bad-ip.png)
 
@@ -13,8 +14,6 @@ Features
 --------
 - **✓** Single check request
 - **✓** Single report request
-
-
 
 Requirements
 ------------
@@ -30,7 +29,7 @@ Dependencies
 Install
 -------
 
-1. Install with composer
+1.  Install with composer
 
     ```bash
     $ mkdir abuseipdb-cli
@@ -38,8 +37,28 @@ Install
     $ composer require kristuff/abuseipdb-cli
     $ composer install
     ```
+2.  Make sure the binary file executable
 
-2. Edit the `config.json` file locate in the `config` path and define your **api key** and you **user id**.
+    ```
+    $ chmod +x /YOUR_PATH/abueipdb-cli/bin/abuseipdb
+    ```
+
+3.  To use it more easily, you could deploy the bin file to `/usr/local/bin/` or `/usr/local/sbin/` (This task require **root** or **administrator** permissions)
+
+    ```
+    # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
+    ```
+
+    **Otherwise**, replace c with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the following examples.
+
+4.  Run  `abuseipdb` without any parameter. You will be ask to define your **api key** and your **user id**. 
+
+    ```
+    $ abuseipdb
+    ```
+    ![install)](doc/sample-install.png)
+
+    You cound also create a `key.json` file in the `config` path and define your **api key** and you **user id** like this:
 
     ```json
     {
@@ -47,59 +66,28 @@ Install
         "user_id": "YOUR ABUSEIPDB USER ID",
     }
     ```
-3. Make sure the binary file executable
-
-    ```bash
-    $ chmod u+x /YOUR_PATH/abuseipdb-cli/bin/abuseipdb
-    ```
-
-4. To use it more easily, you could deploy the bin file to `/usr/local/bin/` (need **root** or **administrator** permissions)
-
-    ```bash
-     # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
-    ```
-
-    Otherwise, replace `abuseipdb` with `./YOUR_PATH_WHERE_YOU_STORE_THIS_PROJECT/bin/abuseipdb` in the following examples.
-
-
+    Then, if you want to change your config, edit the `key.json` or delete that file and run `abuseipdb` to recreate it.
+    
 Documentation
 -------------
 
 ## 1. Usage
+### 1.1 Synopsis:
 ```
- SYNOPSIS:
-     abuseipdb -C ip [-d days]
-     abuseipdb -R ip -c categories -m message
-
- OPTIONS:
-
-   -h, --help
-       Prints the current help. If given, all next arguments are ignored.
-
-   -g, --config
-       Prints the current config. If given, all next arguments are ignored.
-
-   -l, --list
-       Prints the list report categories. If given, all next arguments are ignored.
-
-   -C, --check ip
-       Performs a check request for the given IP adress. A valid IPv4 or IPv6 address is required.
-
-   -d, --days days
-       For a check request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
-
-   -R, --report ip
-       Performs a report request for the given IP adress. A valid IPv4 or IPv6 address is required.
-
-   -c, --categories categories
-       For a report request, defines the report category(ies). Categories must be separate by a comma.
-       Some catgeries cannot be used alone. A category can be represented by its shortname or by its
-       id. Use abuseipdb -l to print the categories list.
-
-   -m, --message message
-       For a report request, defines the message to send with report. Message is required for all
-       reports request.
+abuseipdb -C ip [-d days]
+abuseipdb -R ip -c categories -m message
 ```
+### 1.2 Options:
+option                        |  Description
+------------                  | --------  
+-h, --help                    | Prints the current help. If given, other arguments are ignored.
+-g, --config                  | Prints the current config. If given, other arguments are ignored.
+-l, --list                    | Prints the list report categories. If given, other arguments are ignored.
+-C, --check `ip`              | Performs a check request for the given IP adress. A valid IPv4 or IPv6 address is required.
+-d, --days `days`             | For a check request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
+-R, --report `ip`             | Performs a report request for the given IP adress. A valid IPv4 or IPv6 address is required.
+-c, --categories `categories` | For a report request, defines the report category(ies). Categories must be separate by a comma. Some catgeries cannot be used alone. A category can be represented by its shortname or by its id. Use `abuseipdb -l` to print the categories list.
+-m, --message `message`       | For a report request, defines the message to send with report. Message is required for all report requests.
 
 You can print the help with:
 ```bash
@@ -108,35 +96,31 @@ abuseipdb -h
 ![help)](doc/help.png)
 
 ## 2. Report categories list
-```
- |-----------------+-------+--------------------+-----------------|
- | ShortName       | Id    | Full name          | Can be alone?   |
- |-----------------+-------+--------------------+-----------------|
- | dns-c           |   1   | DNS Compromise     |       true      |
- | dns-p           |   2   | DNS Poisoning      |       true      |
- | fraud-orders    |   3   | Fraud Orders       |       true      |
- | ddos            |   4   | DDoS Attack        |       true      |
- | ftp-bf          |   5   | FTP Brute-Force    |       true      |
- | pingdeath       |   6   | Ping of Death      |       true      |
- | phishing        |   7   | Phishing           |       true      |
- | fraudvoip       |   8   | Fraud VoIP         |       true      |
- | openproxy       |   9   | Open Proxy         |       true      |
- | webspam         |   10  | Web Spam           |       true      |
- | emailspam       |   11  | Email Spam         |       true      |
- | blogspam        |   12  | Blog Spam          |       true      |
- | vpnip           |   13  | VPN IP             |      false      |
- | scan            |   14  | Port Scan          |       true      |
- | hack            |   15  | Hacking            |      false      |
- | sql             |   16  | SQL Injection      |       true      |
- | spoof           |   17  | Spoofing           |       true      |
- | brute           |   18  | Brute-Force        |       true      |
- | badbot          |   19  | Bad Web Bot        |       true      |
- | explhost        |   20  | Exploited Host     |       true      |
- | webattack       |   21  | Web App Attack     |       true      |
- | ssh             |   22  | SSH                |      false      |
- | oit             |   23  | IoT Targeted       |       true      |
- |----------------------------------------------------------------|
-```
+ ShortName       | Id    | Full name          | Can be alone?  
+-----------------|-------|--------------------|----------------
+ dns-c           |   1   | DNS Compromise     |      true
+ dns-p           |   2   | DNS Poisoning      |      true
+ fraud-orders    |   3   | Fraud Orders       |      true
+ ddos            |   4   | DDoS Attack        |      true
+ ftp-bf          |   5   | FTP Brute-Force    |      true
+ pingdeath       |   6   | Ping of Death      |      true
+ phishing        |   7   | Phishing           |      true
+ fraudvoip       |   8   | Fraud VoIP         |      true
+ openproxy       |   9   | Open Proxy         |      true
+ webspam         |   10  | Web Spam           |      true
+ emailspam       |   11  | Email Spam         |      true
+ blogspam        |   12  | Blog Spam          |      true
+ vpnip           |   13  | VPN IP             |      ***false***     
+ scan            |   14  | Port Scan          |      true
+ hack            |   15  | Hacking            |      ***false***     
+ sql             |   16  | SQL Injection      |      true
+ spoof           |   17  | Spoofing           |      true
+ brute           |   18  | Brute-Force        |      true
+ badbot          |   19  | Bad Web Bot        |      true
+ explhost        |   20  | Exploited Host     |      true
+ webattack       |   21  | Web App Attack     |      true
+ ssh             |   22  | SSH                |      ***false***     
+ oit             |   23  | IoT Targeted       |      true
 
 You can print the categories list with:
 ```bash
@@ -149,24 +133,24 @@ abuseipdb -l
 >  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is a private IP address you can use for check/report api testing. Make sure you **do not** blacklist an internal IP on your server, otherwise you won't have a good day! 
 
 Check the ip `127.0.0.1` (default is on last 30 days): 
-```bash
+```
 abuseipdb -C 127.0.0.1 
 ```
 
 Check the ip `127.0.0.1` in last 365 days: 
-```bash
+```
 abuseipdb -R 127.0.0.1 -d 365
 ```
 
-Report the ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force :(`: 
-```bash
+Report the ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force message`: 
+```
 # with categories shortname
 # arguments order does not matter, these two lines do the same
-abuseipdb -R 127.0.0.1  -c ssh,brute  -m "ssh brute force :("
-abuseipdb  -m 'ssh brute force :(' -c ssh,brute  -R 127.0.0.1
+abuseipdb -R 127.0.0.1  -c ssh,brute  -m "ssh brute force message"
+abuseipdb  -m 'ssh brute force message' -c ssh,brute  -R 127.0.0.1
 
 # or with categories id
-abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force :("
+abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force message"
 
 ```
 
