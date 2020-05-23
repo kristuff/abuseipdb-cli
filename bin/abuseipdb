@@ -331,7 +331,7 @@ class AbuseIPDBcli
         try {
             $report = self::$api->report($ip, $cats, $message);     
         
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // done, we clear previous the message. Makes sure we clear the whole line with long string
             Console::reLog('                                                        ');
             self::error($e->getMessage());
@@ -664,7 +664,7 @@ class AbuseIPDBcli
     private static function getDate($date)
     {
         //2020-05-22T17:06:35+00:00
-        return DateTime::createFromFormat('Y-m-d\TH:i:s+', $date)
+        return \DateTime::createFromFormat('Y-m-d\TH:i:s+', $date)
                        ->format('Y-m-d H:i:s');
     } 
 
