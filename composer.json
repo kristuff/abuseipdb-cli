@@ -18,5 +18,10 @@
         "psr-4": {
             "Kristuff\\AbuseIPDB\\": "bin/"
         }
+    },
+    "bin": ["bin/abuseipdb"],
+    "config": {
+        "bin-dir": "bin"
     }
+    
 }
