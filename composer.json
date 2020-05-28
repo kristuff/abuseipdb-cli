@@ -1,7 +1,7 @@
 {
     "name": "kristuff/abuseipdb-cli",
     "description": "A library to work with the AbuseIPDB api V2 (cli version)",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
     "authors": [
         {
