@@ -15,7 +15,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.1
+ * @version    0.9.2
  * @copyright  2020 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -39,7 +39,7 @@ class AbuseIPDBcli
     /**
      * @var string      $version
      */
-    private static $version = 'v0.1'; 
+    private static $version = 'v0.9.2'; 
 
     /**
      * @var ApiManager  $api
