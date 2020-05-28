@@ -22,6 +22,14 @@
     "bin": ["bin/abuseipdb"],
     "config": {
         "bin-dir": "bin"
+    },
+    "scripts": {
+        "move-bin" : [
+            "ln -s 'vendor/kristuff/abuseipdb-cli/bin/abuseipdb'  'testbin/'"
+        ],
+        "post-update-cmd": [
+            "@move-bin"
+         ]
     }
     
 }
