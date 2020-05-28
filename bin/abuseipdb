@@ -15,7 +15,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.0
+ * @version    0.9.1
  * @copyright  2020 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -467,8 +467,12 @@ class AbuseIPDBcli
             $line .= self::printResult(' from ', $check->data->numDistinctUsers, $defaultColor, '', false);
             $line .= Console::text($nbReport > 0 ? ' distinct users': ' user', 'white');
             Console::log($line);
+
         }
-        self::printResult(Console::pad('   Last reported at:', 23), self::getDate($check->data->lastReportedAt), $defaultColor);
+        
+        if (! empty($check->data->lastReportedAt)){
+            self::printResult(Console::pad('   Last reported at:', 23), self::getDate($check->data->lastReportedAt), $defaultColor);
+        }
 
         // print last reports
         $nbLastReports = isset($check->data->reports) ? count($check->data->reports) : 0;
