@@ -12,24 +12,11 @@
     "require": {
         "php": ">=7.1",
         "kristuff/mishell": "^1.4-stable",
-        "kristuff/abuseipdb": ">=0.1-stable"
+        "kristuff/abuseipdb": ">=0.2-stable"
     },
     "autoload": {
         "psr-4": {
             "Kristuff\\AbuseIPDB\\": "bin/"
         }
-    },
-    "bin": ["bin/abuseipdb"],
-    "config": {
-        "bin-dir": "bin"
-    },
-    "scripts": {
-        "move-bin" : [
-            "ln -s 'vendor/kristuff/abuseipdb-cli/bin/abuseipdb'  'testbin/'"
-        ],
-        "post-update-cmd": [
-            "@move-bin"
-         ]
     }
-    
 }
