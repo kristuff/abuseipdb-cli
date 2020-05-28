@@ -467,8 +467,12 @@ class AbuseIPDBcli
             $line .= self::printResult(' from ', $check->data->numDistinctUsers, $defaultColor, '', false);
             $line .= Console::text($nbReport > 0 ? ' distinct users': ' user', 'white');
             Console::log($line);
+
         }
-        self::printResult(Console::pad('   Last reported at:', 23), self::getDate($check->data->lastReportedAt), $defaultColor);
+        
+        if (! empty($check->data->lastReportedAt)){
+            self::printResult(Console::pad('   Last reported at:', 23), self::getDate($check->data->lastReportedAt), $defaultColor);
+        }
 
         // print last reports
         $nbLastReports = isset($check->data->reports) ? count($check->data->reports) : 0;
