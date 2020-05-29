@@ -30,12 +30,10 @@ Dependencies
 Install
 -------
 
-1.  Clone this project and install dependencies with composer
+1.  Install project and dependencies with composer:
 
     ```bash
-    $ git clone https://github.com/kristuff/abuseipdb-cli
-    $ cd abuseipdb-cli
-    $ composer install
+    $  composer create-project kristuff/abuseipdb-cli
     ```
 2.  Make sure the binary file executable
 
@@ -45,6 +43,7 @@ Install
 
 3.  To use it more easily, you could: 
     - deploy the bin file to `/usr/local/bin/` or `/usr/local/sbin/`:
+
     >  This task require **root** or **administrator** permissions.
 
     ```
@@ -52,11 +51,12 @@ Install
     ```
 
     - or create an `alias`:
+
     ```
     $ alias abuseipdb='php /YOUR_PATH/abuseipdb-cli/bin/abuseipdb'
     ```
 
-    **Otherwise**, replace `abuseipdb` with ` php /YOUR_PATH/bin/abuseipdb` in the following examples.
+    **Otherwise**, replace `abuseipdb` with `php /YOUR_PATH/abuseipdb-cli/bin/abuseipdb` in the following examples.
 
 4.  Run  `abuseipdb` without any parameter. You will be ask to define your **api key** and your **user id**. 
 
