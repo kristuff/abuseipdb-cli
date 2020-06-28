@@ -15,7 +15,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.2
+ * @version    0.9.3
  * @copyright  2020 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -39,7 +39,7 @@ class AbuseIPDBcli
     /**
      * @var string      $version
      */
-    private static $version = 'v0.9.2'; 
+    private static $version = 'v0.9.3'; 
 
     /**
      * @var ApiManager  $api
@@ -238,14 +238,14 @@ class AbuseIPDBcli
         // print config
         Console::log(Console::text('  user_id:[', 'white') . Console::text($conf['userId'], 'green') . Console::text(']', 'white'));   
         Console::log(Console::text('  api_key:[', 'white') . Console::text($conf['apiKey'], 'green') . Console::text(']', 'white'));
-      
-        // todo not used for now
-        //   Console::log('  self_ips:');
-      
-        //  foreach($conf['selfIps'] as $ip){
-        //      Console::log('    [' .  Console::text($ip, 'cyan')    . ']');   
-        //  }
-        
+        Console::log(Console::text('  self_ips:', 'white'));
+
+        foreach ($conf['selfIps'] as $ip) {
+            Console::log(Console::text('    [', 'white') .  
+                         Console::text($ip, 'green') .
+                         Console::text(']', 'white')
+            );   
+        }
         Console::log();   
     }
 
@@ -275,7 +275,7 @@ class AbuseIPDBcli
         Console::log(Console::tableRow($rowHeaders));      
         Console::log(Console::tableRowSeparator($rowHeaders), 'darkgray');
         
-        foreach ($categories as $cat){
+        foreach ($categories as $cat) {
             $id = Console::text($cat[1], 'white');
             $standalone = $cat[3] ? Console::text('✓', 'green') . Console::text(' true ', 'lightgray') : 
                                     Console::text('✗', 'red')   . Console::text(' false', 'darkgray');
@@ -315,7 +315,7 @@ class AbuseIPDBcli
         // banner for report
         Console::log();
         Console::log(Console::pad('  ', strlen('  Report IP: '. $ip), '-'), 'darkgray');
-        Console::log(Console::text('  Report IP: ', 'darkgray') . Console::text($ip, 'white') . Console::text(' -', 'darkgray'));
+        Console::log(Console::text('  Report IP: ', 'darkgray') . Console::text($ip, 'white'));
         Console::log(Console::pad('  ', strlen('  Report IP: '. $ip), '-'), 'darkgray');
         Console::log();
    
@@ -497,11 +497,9 @@ class AbuseIPDBcli
                 $line .= Console::text(' - ', 'white');
                 $line .= self::printResult('', $lastReport->reporterCountryName, $defaultColor, '', false);
                 $line .= Console::text(' with categor' .  (count($categories) > 1 ? "ies: " : "y: "), 'white');
-                //$line .= Console::text('[' , 'darkgray');
                 foreach ($categories as $key => $cat) {
                     $line .= Console::text($key==0 ? '' : ',' , 'white') . Console::text($cat, $defaultColor);
                 }
-                //$line .= Console::text(']' , 'darkgray');
                 Console::log($line);
 
                 // counter

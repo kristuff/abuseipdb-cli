@@ -1,5 +1,5 @@
 # kristuff/abuseipdb-cli
-The CLI version of [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a mini library to work with the AbuseIPDB API V2
+CLI tool based on [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a mini library to work with the AbuseIPDB API V2
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/build-status/master)
@@ -15,6 +15,9 @@ Features
 --------
 - **✓** Single check request
 - **✓** Single report request
+- **✓** Colored reports 
+- **✓** Auto cleaning report comment from sensitive data 
+- **✓** Easy Fail2ban integration
 
 Requirements
 ------------
@@ -32,19 +35,19 @@ Install
 
 1.  Install project and dependencies with composer:
 
-    ```bash
+    ```
     $  composer create-project kristuff/abuseipdb-cli
     ```
-2.  Make sure the binary file executable
+2.  Make sure the binary file is executable:
 
     ```
     $ chmod +x /YOUR_PATH/abuseipdb-cli/bin/abuseipdb
     ```
 
 3.  To use it more easily, you could: 
-    - deploy the bin file to `/usr/local/bin/` or `/usr/local/sbin/`:
+    - deploy the bin file to `/usr/local/bin/` or `/usr/sbin/`:
 
-    >  This task require **root** or **administrator** permissions.
+    >  This task requires **root** or **administrator** permissions.
 
     ```
     # ln -s  /YOUR_PATH/abuseipdb-cli/bin/abuseipdb  /usr/local/bin/
@@ -73,7 +76,7 @@ Install
         "user_id": "YOUR ABUSEIPDB USER ID",
     }
     ```
-    Then, if you want to change your config, edit the `key.json` or delete that file and run `abuseipdb` to recreate it.
+    Then, if you want to change your config, edit the `key.json` or delete that file and run `abuseipdb` again to recreate it.
     
 Documentation
 -------------
@@ -119,7 +122,7 @@ abuseipdb -h
  blogspam        |   12  | Blog Spam          |      true
  vpnip           |   13  | VPN IP             |      ***false***     
  scan            |   14  | Port Scan          |      true
- hack            |   15  | Hacking            |      ***false***     
+ hack            |   15  | Hacking            |      true     
  sql             |   16  | SQL Injection      |      true
  spoof           |   17  | Spoofing           |      true
  brute           |   18  | Brute-Force        |      true
