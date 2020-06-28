@@ -1,4 +1,3 @@
 {
-    "report_cats": "TODO",
-    "self_ips": []
+    "max_check_reports": 5
 }
