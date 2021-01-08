@@ -7,14 +7,12 @@ CLI tool based on [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
 ![sample-report](doc/sample-report.gif)
-![sample-check-internal-ip](doc/sample-check-internal-ip.png)
-![sample-check-bad-ip](doc/sample-check-bad-ip.png)
-![sample-report-internal-ip](doc/sample-report-internal-ip.png)
 
 Features
 --------
 - **✓** Single check request
 - **✓** Single report request
+- **✓** Blacklist request
 - **✓** Colored reports 
 - **✓** Auto cleaning report comment from sensitive data 
 - **✓** Easy Fail2ban integration
@@ -27,7 +25,7 @@ Requirements
 
 Dependencies
 ------------
-- [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb) The library to communicate with the abuseIPDB API v2
+- [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb) A wrapper for abuseIPDB API v2
 - [kristuff/mishell](https://github.com/kristuff/mishell) Used to build cli colored/tables reports
 
 Install
@@ -82,30 +80,38 @@ Documentation
 -------------
 
 ## 1. Usage
+
 ### 1.1 Synopsis:
+
 ```
 abuseipdb -C ip [-d days]
+abuseipdb -K network [-d days]
 abuseipdb -R ip -c categories -m message
+abuseipdb -B [-l limit] [-p]
+abuseipdb -L 
+abuseipdb -G 
+abuseipdb -h 
 ```
+
 ### 1.2 Options:
+
 option                        |  Description
 ------------                  | --------  
 -h, --help                    | Prints the current help. If given, other arguments are ignored.
--g, --config                  | Prints the current config. If given, other arguments are ignored.
--l, --list                    | Prints the list report categories. If given, other arguments are ignored.
+-G, --config                  | Prints the current config. If given, other arguments are ignored.
+-L, --list                    | Prints the list report categories. If given, other arguments are ignored.
 -C, --check `ip`              | Performs a check request for the given IP adress. A valid IPv4 or IPv6 address is required.
--d, --days `days`             | For a check request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
+-d, --days `days`             | For a check or check-block request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
 -R, --report `ip`             | Performs a report request for the given IP adress. A valid IPv4 or IPv6 address is required.
--c, --categories `categories` | For a report request, defines the report category(ies). Categories must be separate by a comma. Some catgeries cannot be used alone. A category can be represented by its shortname or by its id. Use `abuseipdb -l` to print the categories list.
+-K, --checkblock `newtork`    | Performs a check-block request for the given newtwork. A valid subnet (v4 or v6) denoted with CIDR notation is required.
+-c, --categories `categories` | For a report request, defines the report category(ies). Categories must be separate by a comma. Some catgeries cannot be used alone. A category can be represented by its shortname or by its id. Use `abuseipdb -L` to print the categories list.
 -m, --message `message`       | For a report request, defines the message to send with report. Message is required for all report requests.
-
-You can print the help with:
-```bash
-abuseipdb -h
-```
-![help](doc/help.png)
+-B, --blacklist | Performs a blacklist request.
+-l, --limit `limit`           | For a blacklist request, defines the limit. Default is 1000.
+-p, --plaintext               | For a blacklist request, output only ip list as plain text.
 
 ## 2. Report categories list
+
  ShortName       | Id    | Full name          | Can be alone?  
 -----------------|-------|--------------------|----------------
  dns-c           |   1   | DNS Compromise     |      true
@@ -138,7 +144,7 @@ abuseipdb -l
 ```
 ![categories)](doc/categories.png)
 
-## 3. Samples
+## 3. Usage
 
 >  As said on [abuseipdb](https://www.abuseipdb.com/check/127.0.0.1), ip `127.0.0.1` is a private IP address you can use for check/report api testing. Make sure you **do not** blacklist an internal IP on your server, otherwise you won't have a good day! 
 
@@ -152,6 +158,17 @@ Check the ip `127.0.0.1` in last 365 days:
 abuseipdb -R 127.0.0.1 -d 365
 ```
 
+Check the block ip `127.0.0.1`: 
+```
+abuseipdb -K 127.0.0.1/24
+```
+
+Check the block ip `127.0.0.1` in last 15 days: 
+```
+abuseipdb -K 127.0.0.1/24 -d 15
+```
+
+
 Report the ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force message`: 
 ```
 # with categories shortname
@@ -161,16 +178,37 @@ abuseipdb  -m 'ssh brute force message' -c ssh,brute  -R 127.0.0.1
 
 # or with categories id
 abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force message"
-
 ```
+
+Get a blacklist of 1000 items:
+```
+abuseipdb -B -l 1000
+```
+
+Get a blacklist of 10000 items as plain text (an IP address by line) and save it to file:
+```
+abuseipdb -Bp -l 10000 > list.txt
+# or
+abuseipdb --blacklist --plaintext -limit 1000 > list.txt
+```
+
+
+Screenshots
+-----------
+
+![sample-check-internal-ip](doc/sample-check-internal-ip.png)
+![sample-checkblock-internal-ip](doc/sample-checkblock-internal-ip.png)
+![sample-check-bad-ip](doc/sample-check-bad-ip.png)
+![sample-checkblock-bad-ip](doc/sample-checkblock-bad-ip.png)
+![sample-report-internal-ip](doc/sample-report-internal-ip.png)
+![sample-blacklist](doc/sample-blacklist.png)
+
 
 Coming soon or ...
 ------------------
-- *\[TODO\]* *Check block request*  
-- *\[TODO\]* *Bulk report request*
 - *\[TODO\]* *Option for max number of last reports displayed. Currently 5*
 - *\[TODO\]* *Check for unicode support*
-- *\[TODO\]* *More options in config: default catgegories, verbose, selfs ips to make sure to exclude from message, ...*
+- *\[TODO\]* *More options in config: default catgegories, verbose, ...*
 
 
 License
@@ -178,7 +216,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2020 Kristuff
+Copyright (c) 2020-2021 Kristuff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
