@@ -1,7 +1,6 @@
 # kristuff/abuseipdb-cli
-CLI tool based on [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a mini library to work with the AbuseIPDB API V2
+> A CLI tool to check/report IP adresses with the AbuseIPDB API V2
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/build-status/master)
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
@@ -189,7 +188,7 @@ Get a blacklist of 10000 items as plain text (an IP address by line) and save it
 ```
 abuseipdb -Bp -l 10000 > list.txt
 # or
-abuseipdb --blacklist --plaintext -limit 1000 > list.txt
+abuseipdb --blacklist --plaintext --limit 1000 > list.txt
 ```
 
 

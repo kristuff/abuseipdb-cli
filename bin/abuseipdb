@@ -595,14 +595,15 @@ class AbuseIPDBcli
             foreach ($check->data->reportedAddress as $report){
                 $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
                 $defaultColor = self::getScoreColor($score);
-
+                //$country =  !empty($report->countryCode) ?  ' (' . $report->countryCode .')' : ''; 
                 $line  = Console::text('    ✓', $defaultColor);
                 $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
+                $line .= self::printResult(' Country: ', $report->countryCode , $defaultColor, '', false);
                 $line .= Console::text(' | Confidence score: ', 'white');
                 $line .= self::getScoreBadge($score);
-                $line .= self::printResult(' | Total reports: ', $report->numReports, $defaultColor, '', false);
-                $line .= self::printResult(' | Last reported at: ', self::getDate($report->mostRecentReport), $defaultColor, '', false);
-                $line .= self::printResult(' | Country code: ', $report->countryCode, $defaultColor, '', false);
+                $line .= self::printResult(' Total reports: ', $report->numReports, $defaultColor, '', false);
+                $line .= self::printResult(' Last reported at: ', self::getDate($report->mostRecentReport), $defaultColor, '', false);
+                //$line .= self::printResult(' | Country code: ', $report->countryCode, $defaultColor, '', false);
                 Console::log($line);
 
                 // counter
@@ -837,7 +838,7 @@ class AbuseIPDBcli
      * 
      * @return string
      */
-    protected static function getScoreBadge(int $score)
+    protected static function getScoreBadge(int $score, string $padding = ' ')
     {
         $scoreforegroundColor = 'white';
         $scoreBackgroundColor = 'green';
@@ -852,7 +853,7 @@ class AbuseIPDBcli
         } 
   
         $badge = str_pad($score, 3, ' ',STR_PAD_LEFT); 
-        return Console::text(' '.$badge.' ', $scoreforegroundColor, $scoreBackgroundColor);
+        return Console::text($padding.$badge.$padding, $scoreforegroundColor, $scoreBackgroundColor);
     }
 
     /**
