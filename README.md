@@ -10,12 +10,12 @@ CLI tool based on [kristuff/abuseipdb](https://github.com/kristuff/abuseipdb), a
 
 Features
 --------
-- **✓** Single check request
-- **✓** Single report request
-- **✓** Blacklist request
-- **✓** Colored reports 
-- **✓** Auto cleaning report comment from sensitive data 
-- **✓** Easy Fail2ban integration
+- Single IP check request **✓** 
+- IP block check request **✓** 
+- Blacklist request **✓** 
+- Single report request **✓** 
+- Auto cleaning report comment from sensitive data **✓** 
+- Easy Fail2ban integration **✓** 
 
 Requirements
 ------------
@@ -209,7 +209,7 @@ Coming soon or ...
 - *\[TODO\]* *Option for max number of last reports displayed. Currently 5*
 - *\[TODO\]* *Check for unicode support*
 - *\[TODO\]* *More options in config: default catgegories, verbose, ...*
-
+- *\[TODO\]* *self_ips config + fail2ban integration documentation*
 
 License
 -------
