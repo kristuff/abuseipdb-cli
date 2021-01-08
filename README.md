@@ -102,7 +102,7 @@ option                        |  Description
 -C, --check `ip`              | Performs a check request for the given IP adress. A valid IPv4 or IPv6 address is required.
 -d, --days `days`             | For a check or check-block request, defines the maxAgeDays. Min is 1, max is 365, default is 30.
 -R, --report `ip`             | Performs a report request for the given IP adress. A valid IPv4 or IPv6 address is required.
--K, --checkblock `newtork`    | Performs a check-block request for the given newtwork. A valid subnet (v4 or v6) denoted with CIDR notation is required.
+-K, --checkblock `network`    | Performs a check-block request for the given network. A valid subnet (v4 or v6) denoted with CIDR notation is required.
 -c, --categories `categories` | For a report request, defines the report category(ies). Categories must be separate by a comma. Some catgeries cannot be used alone. A category can be represented by its shortname or by its id. Use `abuseipdb -L` to print the categories list.
 -m, --message `message`       | For a report request, defines the message to send with report. Message is required for all report requests.
 -B, --blacklist | Performs a blacklist request.
