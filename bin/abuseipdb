@@ -15,7 +15,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.5
+ * @version    0.9.6
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -26,7 +26,7 @@ use Kristuff\AbuseIPDB\ApiHandler;
 use Kristuff\Mishell\Console;
 
 // define arguments and start our app
-$arguments = getopt('GLBpK:C:E:d:R:c:m:l:h', ['config', 'list', 'blacklist', 'check:', 'checkblock:', 'days:', 'report:', 'categories', 'message', 'limit:', 'plaintext', 'clear:', 'help']);
+$arguments = getopt('GLBK:C:d:R:c:m:l:pE:V:h', ['config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories', 'message', 'limit:', 'plain-text', 'clear:','bulk-report:', 'help']);
 AbuseIPDBcli::start($arguments);
 
 /**
@@ -39,7 +39,7 @@ class AbuseIPDBcli
     /**
      * @var string      $version
      */
-    private static $version = 'v0.9.5'; 
+    private static $version = 'v0.9.6'; 
 
     /**
      * @var ApiManager  $api
@@ -113,7 +113,7 @@ class AbuseIPDBcli
         }
        
         // check-block request ?
-        if (self::inArguments($arguments, 'K', 'checkblock')){
+        if (self::inArguments($arguments, 'K', 'check-block')){
             self::checkBlock($arguments);
             exit(0);
         }
@@ -121,6 +121,12 @@ class AbuseIPDBcli
         // report request ?
         if (self::inArguments($arguments, 'R', 'report')){
             self::reportIP($arguments);
+            exit(0);
+        }
+
+        // report request ?
+        if (self::inArguments($arguments, 'V', 'bulk-report')){
+            self::bulkReport($arguments);
             exit(0);
         }
 
@@ -214,6 +220,9 @@ class AbuseIPDBcli
                            Console::text('categories', 'yellow') . ' -m ' .
                            Console::text('message', 'yellow'))); 
 
+        Console::log(' ' . Console::text('    abuseipdb -V ' .
+                           Console::text('path', 'yellow')));
+
         Console::log(' ' . Console::text('    abuseipdb -E ' .
                            Console::text('ip', 'yellow')));
                            
@@ -244,8 +253,8 @@ class AbuseIPDBcli
         Console::log(Console::text('   -C, --check ', 'white') . Console::text('ip', 'yellow', 'underline')); 
         Console::log('       Performs a check request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -K, --checkblock ', 'white') . Console::text('newtork', 'yellow', 'underline')); 
-        Console::log('       Performs a check-block request for the given newtwork. A valid subnet (v4 or v6) denoted with ', 'lightgray');
+        Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('network', 'yellow', 'underline')); 
+        Console::log('       Performs a check-block request for the given network. A valid subnet (v4 or v6) denoted with ', 'lightgray');
         Console::log('       CIDR notation is required.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -d, --days ', 'white') . Console::text('days', 'yellow', 'underline')); 
@@ -254,12 +263,15 @@ class AbuseIPDBcli
         Console::log(Console::text('   -R, --report ', 'white') . Console::text('ip', 'yellow', 'underline')); 
         Console::log('       Performs a report request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
+        Console::log(Console::text('   -V, --bulk-report ', 'white') . Console::text('path', 'yellow', 'underline')); 
+        Console::log('       Performs a bulk-report request sending a csv file. A valid file name or full path is required.', 'lightgray');
+        Console::log();    
         Console::log(Console::text('   -E, --clear ', 'white')); 
         Console::log('       Remove own reports for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();
         Console::log(Console::text('   -c, --categories ', 'white') . Console::text('categories', 'yellow', 'underline')); 
         Console::log('       For a report request, defines the report category(ies). Categories must be separate by a comma.', 'lightgray');
-        Console::log('       Some catgeries cannot be used alone. A category can be represented by its shortname or by its', 'lightgray');
+        Console::log('       Some categories cannot be used alone. A category can be represented by its shortname or by its', 'lightgray');
         Console::log(Console::text('       id. Use ','lightgray')  . Console::text('abuseipdb -L', 'white') . Console::text(' to print the categories list.','lightgray'));
         Console::log();    
         Console::log(Console::text('   -m, --message ', 'white') . Console::text('message', 'yellow', 'underline')); 
@@ -272,10 +284,10 @@ class AbuseIPDBcli
         Console::log(Console::text('   -l, --limit ', 'white') . Console::text('limit', 'yellow', 'underline')); 
         Console::log('       For a blacklist request, defines the limit. Default is 1000.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -p, --plaintext ', 'white')); 
+        Console::log(Console::text('   -p, --plain-text ', 'white')); 
         Console::log('       For a blacklist request, output only ip list as plain text.', 'lightgray');
         Console::log();    
-       }
+    }
 
     /**
      * Prints the current config
@@ -373,7 +385,7 @@ class AbuseIPDBcli
 
         // banner
         Console::log();
-        Console::log(Console::text('  ► Report IP: ', 'darkgray') . Console::text($ip, 'white'));
+        Console::log(Console::text('  ► Report IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white'));
         Console::log();
    
         // temporary message
@@ -426,14 +438,108 @@ class AbuseIPDBcli
             Console::text($ip, $scoreColor) .
             Console::text('] successfully reported', 'white')
         );
-      
-        $line = Console::text('     Confidence score: ', 'white');
-        $line .= self::getScoreBadge($score);
-        Console::log($line);
-      
+        Console::log(Console::text('     Confidence score: ', 'white') . self::getScoreBadge($score));
+
         Console::log();
         self::printFooter($time);
     }
+
+    /**
+     * Perform a bulk-report request 
+     * 
+     * @access protected
+     * @static
+     * @param array $arguments
+     * 
+     * @return void
+     */
+    protected static function bulkReport(array $arguments)
+    {
+        $fileName = self::getArgumentValue($arguments,'V', 'bulk-report', 'No valid file name given.');
+
+        // banner
+        Console::log();
+        Console::log(Console::text('  ► Bulk report for file: ', 'darkgray') . Console::text(escapeshellcmd($fileName), 'white'));
+        Console::log();
+   
+        // temporary message
+        Console::reLog(Console::text('   ? ', 'green') . Console::text('waiting for api response', 'white') . Console::text(' ... ', 'green'));
+
+        // ----------------
+        // Peforms request 
+        // ----------------
+        $timeStart = microtime(true); // request startime 
+        $response = null;
+        
+        try {
+            $response = self::$api->bulkReport($fileName);     
+        
+        } catch (\Exception $e) {
+            // done, we clear previous the message. Makes sure we clear the whole line with long string
+            Console::reLog('                                                        ');
+            self::error($e->getMessage());
+            self::printFooter();
+            exit(1);
+        }
+        
+        $timeEnd = microtime(true);  // request end time 
+        $time = $timeEnd - $timeStart; // request time
+
+        // done, we clear previous the message. Makes sure we clear the whole line with long string
+        Console::reLog('                                                        ');
+
+        // check for errors
+        if (self::printErrors($response)){
+            self::printFooter();
+            exit(1);
+        }
+
+        // empty response ?
+        if (empty($response) || empty($response->data)){
+            self::error('An unexpected error occurred.');
+            self::printFooter();
+            exit(1);
+        }
+
+        // ----------------------------------------------
+        // ✓ Done
+        // ----------------------------------------------
+        Console::log(
+            Console::text('   Bulk report for file: [', 'white') .
+            Console::text($fileName, 'lightyellow') .
+            Console::text('] done!', 'white')
+        );
+
+        $nbErrorReports = isset($response->data->invalidReports) ? count($response->data->invalidReports) : 0;
+        $nbSavedReports = isset($response->data->savedReports) ? $response->data->savedReports : 0;
+        $savedColor = $nbSavedReports > 0 ? 'green' : 'red';
+        $errorColor = $nbErrorReports > 0 ? 'red' : 'green';
+        $savedIcon  = $nbSavedReports > 0 ? '✓' : '✗';
+        $errorIcon  = $nbErrorReports > 0 ? '✗' : '✓';
+
+        Console::log(Console::text('   ' . $savedIcon, $savedColor) . self::printResult(' Saved reports:    ', $nbSavedReports, $savedColor, '', false));
+        Console::log(Console::text('   ' . $errorIcon, $errorColor) . self::printResult(' Invalid reports:  ', $nbErrorReports, $errorColor, '', false));
+
+        if ($nbErrorReports > 0){
+            $numberDiplayedReports = 0;
+            $defaultColor = 'lightyellow'; // reset color for last reports
+        
+            foreach ($response->data->invalidReports as $report){
+                $input = $report->input ? escapeshellcmd($report->input) : ''; // in case on blank line, IP is null
+                $line  = Console::text('      →', 'red');
+                $line .= self::printResult(' Input:         ', $input, $defaultColor, '', false);
+                Console::log($line);
+                self::printResult('        Error:         ', $report->error, $defaultColor);
+                self::printResult('        Line number:   ', $report->rowNumber, $defaultColor);
+                
+                // counter
+                $numberDiplayedReports++;
+            }
+        }
+        Console::log();
+        self::printFooter($time);
+    }
+
 
     /**
      * Perform a clear-address request 
@@ -451,7 +557,7 @@ class AbuseIPDBcli
 
         // banner
         Console::log();
-        Console::log(Console::text('  ► Clear reports for IP: ', 'darkgray') . Console::text($ip, 'white'));
+        Console::log(Console::text('  ► Clear reports for IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white'));
         Console::log();
    
         // temporary message
@@ -482,16 +588,14 @@ class AbuseIPDBcli
 
         // check for errors
         if (self::printErrors($response)){
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
-
-//      var_dump($response);
 
         // empty response ?
         if (empty($response) || empty($response->data)){
             self::error('An unexpected error occurred.');
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
@@ -515,7 +619,7 @@ class AbuseIPDBcli
     }
 
     /**
-     *  
+     * Perform a blacklist request 
      * 
      * @access protected
      * @static
@@ -523,9 +627,9 @@ class AbuseIPDBcli
      * 
      * @return void
      */
-    protected static function getBlacklist($arguments)
+    protected static function getBlacklist(array $arguments)
     {
-        $plainText = self::inArguments($arguments,'p','plaintext');  
+        $plainText = self::inArguments($arguments,'p','plain-text');  
         $limit = 1000; //TODO
 
         if (self::inArguments($arguments,'l','limit')){
@@ -574,17 +678,22 @@ class AbuseIPDBcli
 
         $decodedResponse = $plainText ? json_decode($response) : $response;
         if (self::printErrors($decodedResponse)){
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
         if (!$plainText && empty($response->data)){
             self::error('An unexpected error occurred.');
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
-        if (!$plainText){
+        if ($plainText){
+            // echo response "as is"
+            Console::log($response);
+
+        } else {
+
             self::printResult('  List generated at: ', self::getDate($response->meta->generatedAt), 'lightyellow', '');
             Console::log();
 
@@ -592,7 +701,7 @@ class AbuseIPDBcli
                 $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
                 $defaultColor = self::getScoreColor($score);
 
-                $line  = Console::text('    ✓', $defaultColor);
+                $line  = Console::text('    →', $defaultColor);
                 $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
                 $line .= self::printResult(' | Last reported at: ', self::getDate($report->lastReportedAt), $defaultColor, '', false);
                 $line .= Console::text(' | Confidence score: ', 'white');
@@ -603,8 +712,6 @@ class AbuseIPDBcli
             // footer
             Console::log();
             self::printFooter($time);
-        } else {
-            Console::log($response);
         }
     }
 
@@ -619,12 +726,12 @@ class AbuseIPDBcli
      */
     protected static function checkBlock($arguments)
     {
-        $network = self::getArgumentValue($arguments,'K', 'checkblock', 'No valid network value given.');
+        $network = self::getArgumentValue($arguments,'K', 'check-block', 'No valid network value given.');
         $maxAge   = self::getMaxAgeParameter($arguments, 30);
 
         // banner
         Console::log();
-        Console::log(Console::text('  ► Check network: ', 'darkgray') . Console::text($network, 'white') . Console::text('', 'darkgray'));
+        Console::log(Console::text('  ► Check network: ', 'darkgray') . Console::text(escapeshellcmd($network), 'white') . Console::text('', 'darkgray'));
         Console::log();
    
         // temporary message
@@ -650,13 +757,13 @@ class AbuseIPDBcli
         Console::reLog('                                                        ');
 
         if (self::printErrors($check)){
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
         if (empty($check->data)){
             self::error('An unexpected error occurred.');
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
@@ -680,7 +787,7 @@ class AbuseIPDBcli
                 $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
                 $defaultColor = self::getScoreColor($score);
                 //$country =  !empty($report->countryCode) ?  ' (' . $report->countryCode .')' : ''; 
-                $line  = Console::text('    →', $defaultColor);
+                $line  = Console::text('   →', $defaultColor);
                 $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
                 $line .= self::printResult(' Country: ', $report->countryCode , $defaultColor, '', false);
                 $line .= Console::text(' | Confidence score: ', 'white');
@@ -720,7 +827,7 @@ class AbuseIPDBcli
 
         // banner
         Console::log();
-        Console::log(Console::text('  ► Check IP: ', 'darkgray') . Console::text($ip, 'white') . Console::text('', 'darkgray'));
+        Console::log(Console::text('  ► Check IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white') . Console::text('', 'darkgray'));
         Console::log();
    
         // temporary message
@@ -746,13 +853,13 @@ class AbuseIPDBcli
         Console::reLog('                                                        ');
 
         if (self::printErrors($check)){
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
         if (empty($check->data)){
             self::error('An unexpected error occurred.');
-            self::printFooter();
+            self::printFooter($time);
             exit(1);
         }
 
@@ -891,7 +998,7 @@ class AbuseIPDBcli
             // errors is an array, could have more than one error..
             foreach ($response->errors as $err){
                 Console::log(Console::text('  ✗', 'red') . Console::text(' status: [', 'white') . Console::text($err->status, 'red') . Console::text(']', 'white'));    
-                Console::log(Console::text('    detail: [', 'white') . Console::text($err->detail, 'red') . Console::text(']', 'white'));    
+                Console::log(Console::text('    detail: [', 'white') . Console::text(escapeshellcmd($err->detail), 'red') . Console::text(']', 'white'));    
                 if (isset($err->source )){
                     if (isset($err->source->parameter)){
                         Console::text(Console::text('     parameter: [', 'white') . Console::text($err->source->parameter, 'red') . Console::text(']', 'white'));    
@@ -949,7 +1056,7 @@ class AbuseIPDBcli
     protected static function printResult($text, $value, string $foregroundColor = 'lightred', string $backgroundColor = '', bool $print = true)
     {
         // do not print null/blank values
-        if (!empty($value)){
+        if (isset($value)){
             $line = Console::text($text, 'white') . Console::text($value, $foregroundColor, $backgroundColor); 
             if ($print){
                 Console::log($line);
