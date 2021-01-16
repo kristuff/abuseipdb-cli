@@ -1,6 +1,6 @@
 {
     "name": "kristuff/abuseipdb-cli",
-    "description": "A CLI tool to check/report IP adresses with the AbuseIPDB API V2",
+    "description": "A CLI tool to check/report IP addresses with AbuseIPDB API V2",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -12,7 +12,7 @@
     "require": {
         "php": ">=7.1",
         "kristuff/mishell": "^1.4-stable",
-        "kristuff/abuseipdb": ">=0.9.7-stable"
+        "kristuff/abuseipdb": "0.9.8"
     },
     "autoload": {
         "psr-4": {

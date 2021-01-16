@@ -13,9 +13,9 @@ Features
 - IP block check request **✓** 
 - Blacklist request **✓** 
 - Single IP report request **✓** 
-- Bulk report request (send csv file) **✓** 
-- Clear IP address request (remove own reports) **✓**
-- Auto cleaning report comment from sensitive data **✓** 
+- Bulk report request (send `csv` file) **✓** 
+- Clear IP address request (remove your own reports) **✓**
+- Auto cleaning report comments from sensitive data (email, custom ip/domain names list)  **✓** 
 - Easy Fail2ban integration **✓** 
 - Colored reports **✓** 
 
@@ -33,7 +33,7 @@ Dependencies
 
 More infos
 ----------
-- [website](https://kristuff.fr/projects/abuseipdbcli)
+- [Project website](https://kristuff.fr/projects/abuseipdbcli)
 - [Api documentation](https://kristuff.fr/projects/abuseipdbcli/doc)
 - [Config/Install guide](https://kristuff.fr/projects/abuseipdbcli/technical#configuration)
 - [Fail2ban integration](https://kristuff.fr/projects/abuseipdbcli/technical#fail2ban)
@@ -56,14 +56,6 @@ Screenshots
 ![sample-blacklist](doc/sample-blacklist.png)
 
 ![sample-blacklist-plaintext](doc/sample-blacklist-plaintext.png)
-
-
-Coming soon or ...
-------------------
-- *\[TODO\]* *Option for max number of last reports displayed. Currently 5*
-- *\[TODO\]* *Check for unicode support*
-- *\[TODO\]* *More options in config: default catgegories, verbose, ...*
-- *\[TODO\]* *self_ips config + fail2ban integration documentation*
 
 License
 -------
