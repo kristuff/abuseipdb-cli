@@ -1,3 +1,4 @@
 {
-    "max_check_reports": 5
+    "max_check_reports": 5,
+    "self_ips": []
 }
