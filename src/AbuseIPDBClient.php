@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.8
+ * @version    0.9.9
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -38,12 +38,12 @@ class AbuseIPDBClient extends ShellUtils
     /**
      * @var string      
      */
-    const LONG_ARGUMENTS = ['config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'plaintext', 'clear:','bulk-report:', 'help', 'verbose', 'score:'];
+    const LONG_ARGUMENTS = ['config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'plaintext', 'clear:','bulk-report:', 'help', 'verbose', 'score:','version'];
     
     /**
      * @var string      $version
      */
-    const VERSION = 'v0.9.8'; 
+    const VERSION = 'v0.9.9'; 
 
     /**
      * @var SilentApiHandler  $api
@@ -66,84 +66,89 @@ class AbuseIPDBClient extends ShellUtils
      */
     public static function start($arguments)
     {
+
+        // prints help, (no need install) ?
+        if (self::inArguments($arguments, 'h', 'help')){
+            self::printBanner();
+            self::printHelp();
+            self::safeExit();
+        }
+
         // get key path from current script location (supposed in a bin folder)
+        // and check for install then create a new instance of \ApiHandler
         self::$keyPath = dirname(get_included_files()[0]) . '/../config/key.json';
-
-        // check for install
         self::validate( self::checkForInstall(), 'Key file missing.');
-
-        // Create a new instance of \ApiHandler with the given config file
         try {
             self::$api = self::fromConfigFile(self::$keyPath);
         } catch (\Exception $e) {
             self::error($e->getMessage());
             self::printFooter();
-            exit(1);
+            self::safeExit(1);
         }
     
         // required at least one valid argument
         self::validate( !empty($arguments), 'No valid arguments given. Run abuseipdb --help to get help.');
 
-         // prints help ?
-         if (self::inArguments($arguments, 'h', 'help')){
-            self::printBanner();
-            self::printHelp();
-            exit(0);
+        // prints version?  (note: no short arg)
+        if (self::inArguments($arguments, 'version', 'version')){
+            self::printLogo();
+            self::printVersion();
+            self::safeExit();
         }
 
         // prints config ?
         if (self::inArguments($arguments, 'G', 'config')){
             self::printConfig();
-            exit(0);
+            self::safeExit();
         } 
 
         // prints catgeories ?
         if (self::inArguments($arguments, 'L', 'list')){
             self::printCategories();
-            exit(0);
+            self::safeExit();
         } 
         
         // check request ?
         if (self::inArguments($arguments, 'C', 'check')){
             self::checkIP($arguments);
-            exit(0);
+            self::safeExit();
         }
        
         // check-block request ?
         if (self::inArguments($arguments, 'K', 'check-block')){
             self::checkBlock($arguments);
-            exit(0);
+            self::safeExit();
         }
 
         // report request ?
         if (self::inArguments($arguments, 'R', 'report')){
             self::reportIP($arguments);
-            exit(0);
+            self::safeExit();
         }
 
         // report request ?
         if (self::inArguments($arguments, 'V', 'bulk-report')){
             self::bulkReport($arguments);
-            exit(0);
+            self::safeExit();
         }
 
         // report request ?
         if (self::inArguments($arguments, 'B', 'blacklist')){
             self::getBlacklist($arguments);
-            exit(0);
+            self::safeExit();
         }
 
         // report request ?
         if (self::inArguments($arguments, 'E', 'clear')){
             self::clearIP($arguments);
-            exit(0);
+            self::safeExit();
         }
 
         // no valid arguments given, close program
         Console::log();   
         self::error('invalid arguments. Run abuseipdb --help to get help.');
         self::printFooter();
-        exit(1);
+        self::safeExit(1);
     }
 
     /**
@@ -253,7 +258,7 @@ class AbuseIPDBClient extends ShellUtils
                 Console::log(Console::text('  ✓ ', 'green') . Console::text('Your config file has been successfully created.', 'white'));
                 Console::log('    You can now use abuseipdb.', 'white');
                 Console::log();
-                exit(0);
+                self::safeExit();
             }
         }
         // no key file, not created
@@ -470,7 +475,7 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($report)){
             self::printFooter();
-            exit(1);
+            self::safeExit(1);
         }
         
         // ✓ Done: print reported IP and confidence score
@@ -514,7 +519,7 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($response)){
             self::printFooter();
-            exit(1);
+            self::safeExit(1);
         }
 
         // ✓ Done
@@ -580,7 +585,7 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($response)){
             self::printFooter($time);
-            exit(1);
+            self::safeExit(1);
         }
 
         // ✓ Done: print deleted report number 
@@ -634,12 +639,12 @@ class AbuseIPDBClient extends ShellUtils
         $decodedResponse = $response->getObject();
         
         if ($plainText && $response->hasError()){
-            exit(1);
+            self::safeExit(1);
         }
 
         if (!$plainText && self::printErrors($decodedResponse)){
             self::printFooter($time);
-            exit(1);
+            self::safeExit(1);
         }
 
         if ($plainText){
@@ -698,7 +703,7 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($check)){
             self::printFooter($time);
-            exit(1);
+            self::safeExit(1);
         }
 
         self::printResult(Console::pad('   Network Address:', 23), $check->data->networkAddress, 'lightyellow');
@@ -784,7 +789,7 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($check)){
             self::printFooter($time);
-            exit(1);
+            self::safeExit(1);
         }
 
         // score and data color (depending of abuseConfidenceScore)

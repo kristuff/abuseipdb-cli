@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.8
+ * @version    0.9.9
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -92,5 +92,18 @@ trait UtilsTrait
     protected static function inArguments(array $arguments, string $shortArg, string $longArg)
     {
           return array_key_exists($shortArg, $arguments) || array_key_exists($longArg, $arguments);
+    }
+
+    /**
+     * Exit with code 0 or given exit code
+     * 
+     * @access protected
+     * @static
+     * 
+     * @return void
+     */
+    protected static function safeExit(int $exitCode = 0)
+    {
+        exit($exitCode);
     }
 }

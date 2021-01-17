@@ -14,12 +14,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.8
+ * @version    0.9.9
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
 
 use Kristuff\Mishell\Console;
+use Kristuff\AbuseIPDB\ApiHandler;
 
 /**
  * Class ShellUtils
@@ -77,6 +78,51 @@ abstract class ShellUtils
         // long blank string to overwrite previous message
         Console::reLog('                                                     ');
     }
+
+    /**
+     * Print to banner 
+     * 
+     * @access protected
+     * @static
+     * @param array $arguments
+     * 
+     * @return void
+     */
+    protected static function printLogo()
+    {
+        //Console::log("   _       _    _         __  __                   ", "darkgray");
+        //Console::log("  | |___ _(_)__| |_ _  _ / _|/ _|                  ", "darkgray");
+        //Console::log("  | / / '_| (_-<  _| || |  _|  _|                  ", "darkgray");
+        //Console::log("  |_\_\_| |_/__/\__|\_,_|_| |_|                    ", "darkgray");
+        
+        Console::log("         _                 ___ ___ ___  ___        ", "darkgray");
+        Console::log("    __ _| |__ _  _ ___ ___|_ _| _ \   \| _ )       ", "darkgray");
+        Console::log("   / _` | '_ \ || (_-</ -_)| ||  _/ |) | _ \       ", "darkgray");
+        Console::log("   \__,_|_.__/\_,_/__/\___|___|_| |___/|___/       ", "darkgray");
+    }
+
+    /**
+     * Print version 
+     * 
+     * @access protected
+     * @static
+     * @param array $arguments
+     * 
+     * @return void
+     */
+    protected static function printVersion()
+    {
+        Console::log();
+        Console::log(Console::text('  Kristuff/AbuseIPDB Client version: ', 'darkgray') . Console::text(AbuseIPDBClient::VERSION, 'lightgray'));
+        Console::log(Console::text('  Kristuff/AbuseIPDB Core version:   ', 'darkgray') . Console::text(ApiHandler::VERSION, 'lightgray')); 
+        Console::log(Console::text('  --------------------------------------------------', 'darkgray'));    
+        Console::log(Console::text('  Licence: ', 'darkgray') . Console::text('MIT', 'lightgray'));
+        Console::log(Console::text('  Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France ', 'darkgray'));
+        Console::log(Console::text('  © 2020-2021 Kristuff (https://github.com/kristuff)', 'darkgray'));
+        Console::log(Console::text('  --------------------------------------------------', 'darkgray'));    
+        Console::log();
+    }
+
 
     /**
      * Print app banner
