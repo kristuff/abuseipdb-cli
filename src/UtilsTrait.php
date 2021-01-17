@@ -84,12 +84,12 @@ trait UtilsTrait
      * @access protected
      * @static
      * @param array     $arguments      The list of arguments     
-     * @param array     $shortArg       The short argument name
-     * @param array     $longArg        The long argument name
+     * @param string     $shortArg       The short argument name
+     * @param string     $longArg        The long argument name
      * 
      * @return bool     True if the short or long argument exist in the arguments array, otherwise false
      */
-    protected static function inArguments($arguments, $shortArg, $longArg)
+    protected static function inArguments(array $arguments, string $shortArg, string $longArg)
     {
           return array_key_exists($shortArg, $arguments) || array_key_exists($longArg, $arguments);
     }
