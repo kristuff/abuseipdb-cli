@@ -17,6 +17,9 @@
     "bin": [
         "bin/abuseipdb"
     ],
+    "config": {
+        "bin-dir": "bin"
+    },
     "autoload": {
         "psr-4": {
             "Kristuff\\AbuseIPDB\\": "src/"
