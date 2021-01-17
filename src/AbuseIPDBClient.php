@@ -46,7 +46,7 @@ class AbuseIPDBClient extends ShellUtils
     const VERSION = 'v0.9.8'; 
 
     /**
-     * @var SafeApiHandler  $api
+     * @var SilentApiHandler  $api
      */
     private static $api = null; 
 
