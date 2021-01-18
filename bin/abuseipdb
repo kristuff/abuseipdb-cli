@@ -19,15 +19,59 @@
  * @copyright  2020-2021 Kristuff
  */
 
-require_once realpath(__DIR__) .'/../vendor/autoload.php';
-
 use Kristuff\AbuseIPDB\AbuseIPDBClient;
+
+/**
+ * Autoloading (depending on install directory) 
+ * 
+ * 1/ Installed with create-project abuseipdb-client
+ * 
+ *  project
+ *    |_ bin
+ *       xxx symlink
+ *    |_ config
+ *    |_ vendor
+ *         |_ kristuff
+ *               |_  abusedipdb-cli
+ *                       |_ bin 
+ *                            xxx <- me
+ * 
+ * 2/ installed with git clone or create-project abuseipdb-cli
+ *    bin and config folder as same level 
+ * 
+ *   project
+ *      |_ bin 
+ *           xxx <- me
+ *      |_ config
+ *      |_ vendor
+ * 
+*/
+
+//  2/ git clone or create-project abuseipdb-cli
+$autoloadPath = realpath(__DIR__) .'/../vendor/autoload.php';
+$keyPath = realpath(__DIR__) .'/../config/key.json';
+
+//  test for 1/
+$parentDirectory    = dirname(get_included_files()[0], 2);
+$subParentDirectory = dirname(get_included_files()[0], 3);
+$vendorDirectory = dirname(get_included_files()[0], 4); // should be vendor
+
+if (pathinfo($parentDirectory, PATHINFO_BASENAME) === 'abuseipdb-cli' && 
+    pathinfo($subParentDirectory, PATHINFO_BASENAME) === 'kristuff' && 
+    pathinfo($vendorDirectory, PATHINFO_BASENAME) === 'vendor') {
+
+    $keyPath       = $vendorDirectory . '/../config/key.json';
+    $autoloadPath  = $vendorDirectory .'/autoload.php';
+};
+
+require_once $autoloadPath;
 
 AbuseIPDBClient::start(
     getopt(
         AbuseIPDBClient::SHORT_ARGUMENTS,
         AbuseIPDBClient::LONG_ARGUMENTS
-    )
+    ), 
+    $keyPath
 );
 
 ?>

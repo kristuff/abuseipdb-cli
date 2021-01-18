@@ -60,23 +60,28 @@ class AbuseIPDBClient extends ShellUtils
      * 
      * @access public
      * @static
-     * @param array $arguments
+     * @param array     $arguments
+     * @param string    $keyPath        The key file path
      * 
      * @return void
      */
-    public static function start($arguments)
+    public static function start(array $arguments, string $keyPath)
     {
-
         // prints help, (no need install) ?
         if (self::inArguments($arguments, 'h', 'help')){
             self::printBanner();
             self::printHelp();
             self::safeExit();
         }
+        // prints version?  (note: no short arg)
+        if (self::inArguments($arguments, 'version', 'version')){
+            self::printVersion();
+            self::safeExit();
+        }
 
         // get key path from current script location (supposed in a bin folder)
         // and check for install then create a new instance of \ApiHandler
-        self::$keyPath = dirname(get_included_files()[0]) . '/../config/key.json';
+        self::$keyPath = $keyPath; // dirname(get_included_files()[0]) . '/../config/key.json';
         self::validate( self::checkForInstall(), 'Key file missing.');
         try {
             self::$api = self::fromConfigFile(self::$keyPath);
@@ -89,12 +94,6 @@ class AbuseIPDBClient extends ShellUtils
         // required at least one valid argument
         self::validate( !empty($arguments), 'No valid arguments given. Run abuseipdb --help to get help.');
 
-        // prints version?  (note: no short arg)
-        if (self::inArguments($arguments, 'version', 'version')){
-            self::printLogo();
-            self::printVersion();
-            self::safeExit();
-        }
 
         // prints config ?
         if (self::inArguments($arguments, 'G', 'config')){
@@ -374,6 +373,9 @@ class AbuseIPDBClient extends ShellUtils
         Console::log('       For a check request, display additional fields like the x last reports. This increases ', 'lightgray');
         Console::log(Console::text('       request time and response size. Max number of last reports displayed can be changed with the ', 'lightgray'));
         Console::log('       ' . Console::text('--limit', 'white') . Console::text(' parameter. ', 'lightgray'));
+        Console::log();    
+        Console::log(Console::text('   --version', 'white')); 
+        Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
         Console::log();    
     }
 
