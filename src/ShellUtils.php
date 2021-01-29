@@ -264,7 +264,23 @@ abstract class ShellUtils
      * 
      * @return bool     
      */
-    protected static function parseErrors(object $response, bool $checkForEmpty = true)
+    protected static function hasErrors(object $response, bool $checkForEmpty = true )
+    {
+        return $checkForEmpty ? self::parseErrors($response) || self::checkForEmpty($response) : self::parseErrors($response);
+    }
+
+
+    /**
+     * Check and print errors in API response. 
+     * 
+     * @access protected
+     * @static
+     * @param object     $response       
+     * @param bool       $checkForEmpty     
+     * 
+     * @return bool     
+     */
+    private static function parseErrors(object $response)
     {
         if (isset($response) && isset($response->errors)){
             switch (self::$outputFormat){
@@ -282,15 +298,26 @@ abstract class ShellUtils
             }
             return true;
         }
+        return false;    
+    }
 
+    /**
+     * Check and print errors in API response. 
+     * 
+     * @access protected
+     * @static
+     * @param object     $response       
+     * 
+     * @return bool     
+     */
+    protected static function checkForEmpty(object $response)
+    {
         // check for empty response ?
-        if ( $checkForEmpty && ( empty($response) || empty($response->data)) ){
+        if ( empty($response) || empty($response->data) ){
             self::error('An unexpected error occurred.');
             return true;
         }
-
         return false;    
-
     }
 
     /**

@@ -301,7 +301,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
         
         // check for errors / empty response
-        if (self::parseErrors($report)){
+        if (self::hasErrors($report)){
             self::printFooter();
             Program::exit(1);
         }
@@ -356,7 +356,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::parseErrors($response)){
+        if (self::hasErrors($response)){
             self::printFooter();
             Program::exit(1);
         }
@@ -406,7 +406,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::parseErrors($response)){
+        if (self::hasErrors($response)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -465,7 +465,7 @@ class AbuseIPDBClient extends AbstractClient
     
         // response could be json on error, while plaintext flag is set
         $decodedResponse = $response->getObject();
-        if (self::parseErrors($decodedResponse, false)){
+        if (self::hasErrors($decodedResponse, false)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -531,7 +531,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::parseErrors($check)){
+        if (self::hasErrors($check)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -594,7 +594,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::parseErrors($check)){
+        if (self::hasErrors($check)){
             self::printFooter($time);
             Program::exit(1);
         }
