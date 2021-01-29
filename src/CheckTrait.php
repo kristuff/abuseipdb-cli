@@ -129,54 +129,82 @@ trait CheckTrait
      * 
      * @return void
      */
-    protected static function printCheckLastReports(object $response, bool $verbose, int $maxReportsNumber)
+    protected static function printCheckLastReports(object $response, int $maxReportsNumber)
     {
-         // print last reports
-         if ($verbose){
-            $nbLastReports = isset($response->data->reports) ? count($response->data->reports) : 0;
+        $nbLastReports = isset($response->data->reports) ? count($response->data->reports) : 0;
             
-            if ($nbLastReports > 0){
-                Console::log('   Last reports:', 'white');
-                $numberDiplayedReports = 0;
-                $defaultColor = 'lightyellow'; // reset color for last reports
-            
-                foreach ($response->data->reports as $lastReport){
-                    $categories = [];
-                    foreach (array_filter($lastReport->categories) as $catId){
-                        $cat = ApiHandler::getCategoryNamebyId($catId)[0];
-                        if ($cat !== false) {
-                            $categories[] = $cat;
-                        }
-                    }
+        if ($nbLastReports > 0){
+            Console::log('   Last reports:', 'white');
+            $numberDiplayedReports = 0;
+            $defaultColor = 'lightyellow'; // reset color for last reports
+        
+            foreach ($response->data->reports as $report){
+                self::printLastReport($report);
+                $numberDiplayedReports++;
 
-                    $line  = Console::text('    →', $defaultColor);
-                    $line .= self::printResult(' reported at: ', self::getDate($lastReport->reportedAt), $defaultColor, '', false);
-              //    $line .= self::printResult(' by user: ', $lastReport->reporterId, $defaultColor, '', false);
-                    if (isset($lastReport->reporterCountryCode) && isset($lastReport->reporterCountryName)){
-                        $line .= Console::text(' from: ', 'white');
-                        $line .= self::printResult('', $lastReport->reporterCountryCode, $defaultColor, '', false);
-                        $line .= Console::text(' - ', 'white');
-                        $line .= self::printResult('', $lastReport->reporterCountryName, $defaultColor, '', false);
-                    }
-                    $line .= Console::text(' with categor' .  (count($categories) > 1 ? "ies: " : "y: "), 'white');
-                    foreach ($categories as $key => $cat) {
-                        $line .= Console::text($key==0 ? '' : ',' , 'white') . Console::text($cat, $defaultColor);
-                    }
+                if ($numberDiplayedReports === $maxReportsNumber || $numberDiplayedReports === $nbLastReports) {
+                    $line  = Console::text('      (', 'white');
+                    $line .= Console::text($numberDiplayedReports, $defaultColor);
+                    $line .= Console::text('/', 'white');
+                    $line .= Console::text($nbLastReports, $defaultColor);
+                    $line .= Console::text($numberDiplayedReports > 1 ? ' reports displayed)': ' report displayed)', 'white');
                     Console::log($line);
-
-                    // counter
-                    $numberDiplayedReports++;
-                    if ($numberDiplayedReports === $maxReportsNumber || $numberDiplayedReports === $nbLastReports) {
-                        $line  = Console::text('      (', 'white');
-                        $line .= Console::text($numberDiplayedReports, $defaultColor);
-                        $line .= Console::text('/', 'white');
-                        $line .= Console::text($nbLastReports, $defaultColor);
-                        $line .= Console::text($numberDiplayedReports > 1 ? ' reports displayed)': ' report displayed)', 'white');
-                        Console::log($line);
-                        break;
-                    }
+                    break;
                 }
+            }            
+        }
+    }
+    
+    /**
+     * Print single entry in last reports 
+     * 
+     * @access protected
+     * @static
+     * @param object    $report
+     * 
+     * @return array
+     */
+    private static function printLastReport(object $report)
+    {
+        $categories = self::getLastReportsCategories($report);
+        $defaultColor = 'lightyellow'; // reset color for last reports
+                            
+        $line  = Console::text('    →', $defaultColor);
+        $line .= self::printResult(' reported at: ', self::getDate($report->reportedAt), $defaultColor, '', false);
+  //    $line .= self::printResult(' by user: ', $report->reporterId, $defaultColor, '', false);
+        if (isset($report->reporterCountryCode) && isset($report->reporterCountryName)){
+            $line .= Console::text(' from: ', 'white');
+            $line .= self::printResult('', $report->reporterCountryCode, $defaultColor, '', false);
+            $line .= Console::text(' - ', 'white');
+            $line .= self::printResult('', $report->reporterCountryName, $defaultColor, '', false);
+        }
+        $line .= Console::text(' with categor' .  (count($categories) > 1 ? "ies: " : "y: "), 'white');
+        foreach ($categories as $key => $cat) {
+            $line .= Console::text($key==0 ? '' : ',' , 'white') . Console::text($cat, $defaultColor);
+        }
+        Console::log($line);
+
+       
+    }  
+
+    /**
+     * Get last report categories array 
+     * 
+     * @access protected
+     * @static
+     * @param object    $report
+     * 
+     * @return array
+     */
+    private static function getLastReportsCategories(object $report)
+    {
+        $categories = [];
+        foreach (array_filter($report->categories) as $catId){
+            $cat = ApiHandler::getCategoryNamebyId($catId)[0];
+            if ($cat !== false) {
+                $categories[] = $cat;
             }
         }
-    }    
+        return $categories;                          
+   }    
 }

@@ -612,7 +612,9 @@ class AbuseIPDBClient extends AbstractClient
                 self::printCheckScore($check);
                 self::printCheckDetail($check, $defaultColor);
                 self::printCheckReports($check, $maxAge, $defaultColor);
-                self::printCheckLastReports($check, $verbose, $maxReportsNumber);
+                if ($verbose){
+                    self::printCheckLastReports($check, $maxReportsNumber);
+                }
                 Console::log();
                 self::printFooter($time);
                 break;
