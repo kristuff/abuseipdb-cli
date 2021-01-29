@@ -14,46 +14,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.9
+ * @version    0.9.10
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
 
 use Kristuff\AbuseIPDB\SilentApiHandler;
 use Kristuff\Mishell\Console;
+use Kristuff\Mishell\Program;
 
 /**
  * Class AbuseIPDB
  * 
  * The main cli program
  */
-class AbuseIPDBClient extends ShellUtils
+class AbuseIPDBClient extends AbstractClient
 {
-
     /**
-     * @var string      
+     * Helper methods
      */
-    const SHORT_ARGUMENTS = "GLBK:C:d:R:c:m:l:pE:V:hvs:";
-
-    /**
-     * @var string      
-     */
-    const LONG_ARGUMENTS = ['config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'plaintext', 'clear:','bulk-report:', 'help', 'verbose', 'score:','version'];
-    
-    /**
-     * @var string      $version
-     */
-    const VERSION = 'v0.9.9'; 
-
-    /**
-     * @var SilentApiHandler  $api
-     */
-    private static $api = null; 
-
-    /**
-     * @var string      $keyPath
-     */
-    private static $keyPath = __DIR__ .'/../config/key.json';
+    use CheckTrait, CheckBlockTrait, BulkReportTrait;
 
     /**
      * The entry point of our app 
@@ -67,201 +47,48 @@ class AbuseIPDBClient extends ShellUtils
      */
     public static function start(array $arguments, string $keyPath)
     {
-        // prints help, (no need install) ?
-        if (self::inArguments($arguments, 'h', 'help')){
-            self::printBanner();
-            self::printHelp();
-            self::safeExit();
-        }
-        // prints version?  (note: no short arg)
-        if (self::inArguments($arguments, 'version', 'version')){
-            self::printVersion();
-            self::safeExit();
-        }
-
-        // get key path from current script location (supposed in a bin folder)
-        // and check for install then create a new instance of \ApiHandler
-        self::$keyPath = $keyPath; // dirname(get_included_files()[0]) . '/../config/key.json';
-        self::validate( self::checkForInstall(), 'Key file missing.');
-        try {
-            self::$api = self::fromConfigFile(self::$keyPath);
-        } catch (\Exception $e) {
-            self::error($e->getMessage());
-            self::printFooter();
-            self::safeExit(1);
-        }
-    
         // required at least one valid argument
+        self::$keyPath = $keyPath; 
         self::validate( !empty($arguments), 'No valid arguments given. Run abuseipdb --help to get help.');
-
-
-        // prints config ?
-        if (self::inArguments($arguments, 'G', 'config')){
-            self::printConfig();
-            self::safeExit();
-        } 
-
-        // prints catgeories ?
-        if (self::inArguments($arguments, 'L', 'list')){
-            self::printCategories();
-            self::safeExit();
-        } 
-        
-        // check request ?
-        if (self::inArguments($arguments, 'C', 'check')){
-            self::checkIP($arguments);
-            self::safeExit();
+        if (!self::parseCommand($arguments, $keyPath)) {
+            self::error('Invalid arguments. Run abuseipdb --help to get help.');
+            self::printFooter();
+            Program::exit(1);
         }
-       
-        // check-block request ?
-        if (self::inArguments($arguments, 'K', 'check-block')){
-            self::checkBlock($arguments);
-            self::safeExit();
-        }
-
-        // report request ?
-        if (self::inArguments($arguments, 'R', 'report')){
-            self::reportIP($arguments);
-            self::safeExit();
-        }
-
-        // report request ?
-        if (self::inArguments($arguments, 'V', 'bulk-report')){
-            self::bulkReport($arguments);
-            self::safeExit();
-        }
-
-        // report request ?
-        if (self::inArguments($arguments, 'B', 'blacklist')){
-            self::getBlacklist($arguments);
-            self::safeExit();
-        }
-
-        // report request ?
-        if (self::inArguments($arguments, 'E', 'clear')){
-            self::clearIP($arguments);
-            self::safeExit();
-        }
-
-        // no valid arguments given, close program
-        Console::log();   
-        self::error('invalid arguments. Run abuseipdb --help to get help.');
-        self::printFooter();
-        self::safeExit(1);
+        Program::exit(0);
     }
-
+   
     /**
-     * Get a new instance of ApiHandler with config stored in a Json file
-     * 
-     * @access public 
-     * @static
-     * @param string    $configPath     The configuration file path
-     * 
-     * @return \Kristuff\AbuseIPDB\ApiHandler
-     * @throws \InvalidArgumentException                        If the given file does not exist
-     * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
-     */
-    public static function fromConfigFile(string $configPath)
-    {
-        // check file exists
-        if (!file_exists($configPath) || !is_file($configPath)){
-            throw new \InvalidArgumentException('The file [' . $configPath . '] does not exist.');
-        }
-
-        // check file is readable
-        if (!is_readable($configPath)){
-            throw new InvalidPermissionException('The file [' . $configPath . '] is not readable.');
-        }
-
-        $keyConfig = self::loadJsonFile($configPath);
-        $selfIps = [];
-        
-        // Look for other optional config files in the same directory 
-        $selfIpsConfigPath = pathinfo($configPath, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR . 'self_ips.json';
-        if (file_exists($selfIpsConfigPath)){
-            $selfIps = self::loadJsonFile($selfIpsConfigPath)->self_ips;
-        }
-
-        $app = new SilentApiHandler($keyConfig->api_key, $selfIps);
-        
-        return $app;
-    }
-
-    /** 
-     * Load and returns decoded Json from given file  
-     *
-     * @access public
-     * @static
-	 * @param string    $filePath       The file's full path
-	 * @param bool      $throwError     Throw error on true or silent process. Default is true
+     * Register API key in a config file
      *  
-	 * @return object|null 
-     * @throws \Exception
-     * @throws \LogicException
-     */
-    protected static function loadJsonFile(string $filePath, bool $throwError = true)
-    {
-        // check file exists
-        if (!file_exists($filePath) || !is_file($filePath)){
-           if ($throwError) {
-                throw new \Exception('Config file not found');
-           }
-           return null;  
-        }
-
-        // get and parse content
-        $content = utf8_encode(file_get_contents($filePath));
-        $json    = json_decode($content);
-
-        // check for errors
-        if ($json == null && json_last_error() != JSON_ERROR_NONE && $throwError) {
-            throw new \LogicException(sprintf("Failed to parse config file Error: '%s'", json_last_error_msg()));
-        }
-
-        return $json;        
-    }
-
-    /**
-     * Check for install
-     * 
      * @access protected
      * @static
      * 
      * @return bool
      */
-    protected static function checkForInstall()
+    protected static function registerApiKey($arguments)
     {
-        if (file_exists(self::$keyPath)) {
-            return true;
-        }
+        self::printTitle(Console::text('  ► Register API key ', 'darkgray'));
         
-        // not installed
-        self::printBanner();
-        Console::log(' Your config key file was not found. Do you want to create it? ', 'white');
-        $create =  Console::ask(' Press Y/y to create a config key file: ', 'white');
-            
-        if ($create == 'Y' || $create == 'y') {
-            $key =     Console::ask(' - Please enter your api key: ', 'white');
-            $create =  Console::ask(' A config file will be created in config/ directory. Press Y/y to continue: ', 'white');
-            
-            if ($create == 'Y' || $create == 'y') {
-                $data = json_encode(['api_key' => $key]);
-                
-                if (file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
-                    self::error('An error occured during writing config file. Make sure to give the appropriate permissions do the config directory.');
-                    return false;
-                }
-
-                // successfull. print message and exit to prevent errors with no arguments 
-                Console::log();
-                Console::log(Console::text('  ✓ ', 'green') . Console::text('Your config file has been successfully created.', 'white'));
-                Console::log('    You can now use abuseipdb.', 'white');
-                Console::log();
-                self::safeExit();
-            }
+        $key = self::getArgumentValue($arguments,'S', 'save-key');
+        
+        if (empty($key)){
+            self::error('Null or invalid key argument.');
+            self::printFooter();
+            Program::exit(1);
         }
-        // no key file, not created
-        return false;    
+
+        $data = json_encode(['api_key' => $key]);
+       
+        if (file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
+            self::error('An error occured during writing config file. Make sure to give the appropriate permissions do the config directory.');
+            self::printFooter();
+            Program::exit(1);
+        }
+        Console::log(Console::text('  ✓ ', 'green') . Console::text('Your config key file has been successfully created.', 'white'));
+        Console::log();   
+        self::printFooter();
+        Program::exit();
     }
  
     /**
@@ -274,44 +101,44 @@ class AbuseIPDBClient extends ShellUtils
      */
     protected static function printHelp()
     {
+        self::printBanner();
+
         Console::log(' ' . Console::text('SYNOPSIS:', 'white', 'underline')); 
         Console::log(' ' . Console::text('    abuseipdb -C ') . 
-                           Console::text('ip', 'yellow') . 
+                           Console::text('IP', 'yellow') . 
                            Console::text(' [-d ') . 
-                           Console::text('days', 'yellow') . 
+                           Console::text('DAYS', 'yellow') . 
                            Console::text('] [-v] [-l ') . 
-                           Console::text('limit', 'yellow') . 
+                           Console::text('LIMIT', 'yellow') . 
                            Console::text(']')); 
 
         Console::log(' ' . Console::text('    abuseipdb -K ') . 
-                           Console::text('network', 'yellow') . 
+                           Console::text('NETWORK', 'yellow') . 
                            Console::text(' [-d ') . 
-                           Console::text('days', 'yellow') . 
+                           Console::text('DAYS', 'yellow') . 
                            Console::text(']')); 
 
         Console::log(' ' . Console::text('    abuseipdb -R ' .
-                           Console::text('ip', 'yellow') . ' -c ' .
-                           Console::text('categories', 'yellow') . ' -m ' .
-                           Console::text('message', 'yellow'))); 
+                           Console::text('IP', 'yellow') . ' -c ' .
+                           Console::text('CATEGORIES', 'yellow') . ' -m ' .
+                           Console::text('MESSAGE', 'yellow'))); 
 
         Console::log(' ' . Console::text('    abuseipdb -V ' .
-                           Console::text('path', 'yellow')));
+                           Console::text('FILE', 'yellow')));
 
         Console::log(' ' . Console::text('    abuseipdb -E ' .
-                           Console::text('ip', 'yellow')));
+                           Console::text('IP', 'yellow')));
                            
         Console::log(' ' . Console::text('    abuseipdb -B ') . 
                            Console::text('[-l ') . 
-                           Console::text('limit', 'yellow') . 
+                           Console::text('LIMIT', 'yellow') . 
                            Console::text('] [-s ') . 
-                           Console::text('score', 'yellow') . 
+                           Console::text('SCORE', 'yellow') . 
                            Console::text('] [-p ') . 
                            Console::text('', 'yellow') . 
                            Console::text(']')); 
 
-        Console::log(' ' . Console::text('    abuseipdb -L '));
-        Console::log(' ' . Console::text('    abuseipdb -G '));
-        Console::log(' ' . Console::text('    abuseipdb -h '));
+        Console::log(' ' . Console::text('    abuseipdb -L | -G | -h | --version'));
                            
         Console::log();    
         Console::log(' ' . Console::text('OPTIONS:', 'white', 'underline')); 
@@ -376,11 +203,11 @@ class AbuseIPDBClient extends ShellUtils
         Console::log();    
         Console::log(Console::text('   --version', 'white')); 
         Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
-        Console::log();    
+        Console::log(); 
     }
 
     /**
-     * Prints the current config
+     * Prints the current config and exit
      * 
      * @access protected
      * @static
@@ -416,7 +243,7 @@ class AbuseIPDBClient extends ShellUtils
     {
         self::printTitle(Console::text('  ► Report categories list ', 'darkgray'));
 
-        $categories = self::$api->getCategories();
+        $categories = ApiHandler::getCategories();
         $rowHeaders = [
             Console::text('ShortName',      'darkgray') => 15, 
             Console::text('Id',             'darkgray') => 2, 
@@ -473,26 +300,37 @@ class AbuseIPDBClient extends ShellUtils
         $timeEnd = microtime(true);
         $time = $timeEnd - $timeStart; // request time
         self::clearTempMessage();
-
+        
         // check for errors / empty response
         if (self::printErrors($report)){
             self::printFooter();
-            self::safeExit(1);
+            Program::exit(1);
         }
-        
+               
         // ✓ Done: print reported IP and confidence score
         $score = empty($report->data->abuseConfidenceScore) ? 0 : $report->data->abuseConfidenceScore;
         $scoreColor = self::getScoreColor($score);
-        Console::log(
-            Console::text('   ✓', 'green') . 
-            Console::text(' IP: [', 'white') .
-            Console::text($ip, $scoreColor) .
-            Console::text('] successfully reported', 'white')
-        );
-        Console::log(Console::text('     Confidence score: ', 'white') . self::getScoreBadge($score));
 
-        Console::log();
-        self::printFooter($time);
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($report, JSON_PRETTY_PRINT);
+                break;
+       
+            case self::OUTPUT_DEFAULT:  
+                Console::log(
+                    Console::text('   ✓', 'green') . Console::text(' IP: [', 'white') .
+                    Console::text($ip, $scoreColor) . Console::text('] successfully reported', 'white')
+                );
+                Console::log(Console::text('     Confidence score: ', 'white') . self::getScoreBadge($score));
+                Console::log();
+                self::printFooter($time);
+                break;
+
+            case self::OUTPUT_PLAINTEXT:
+                echo $score . PHP_EOL;
+                break;
+
+        }
     }
 
     /**
@@ -521,44 +359,27 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($response)){
             self::printFooter();
-            self::safeExit(1);
+            Program::exit(1);
         }
 
         // ✓ Done
-        Console::log(
-            Console::text('   Bulk report for file: [', 'white') .
-            Console::text($fileName, 'lightyellow') .
-            Console::text('] done!', 'white')
-        );
-
-        $nbErrorReports = isset($response->data->invalidReports) ? count($response->data->invalidReports) : 0;
-        $nbSavedReports = isset($response->data->savedReports) ? $response->data->savedReports : 0;
-        $savedColor = $nbSavedReports > 0 ? 'green' : 'red';
-        $errorColor = $nbErrorReports > 0 ? 'red' : 'green';
-        $savedIcon  = $nbSavedReports > 0 ? '✓' : '✗';
-        $errorIcon  = $nbErrorReports > 0 ? '✗' : '✓';
-
-        Console::log(Console::text('   ' . $savedIcon, $savedColor) . self::printResult(' Saved reports:    ', $nbSavedReports, $savedColor, '', false));
-        Console::log(Console::text('   ' . $errorIcon, $errorColor) . self::printResult(' Invalid reports:  ', $nbErrorReports, $errorColor, '', false));
-
-        if ($nbErrorReports > 0){
-            $numberDiplayedReports = 0;
-            $defaultColor = 'lightyellow'; // reset color for last reports
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($response, JSON_PRETTY_PRINT);
+                break;
         
-            foreach ($response->data->invalidReports as $report){
-                $input = $report->input ? escapeshellcmd($report->input) : ''; // in case on blank line, IP is null
-                $line  = Console::text('      →', 'red');
-                $line .= self::printResult(' Input:         ', $input, $defaultColor, '', false);
-                Console::log($line);
-                self::printResult('        Error:         ', $report->error, $defaultColor);
-                self::printResult('        Line number:   ', $report->rowNumber, $defaultColor);
-                
-                // counter
-                $numberDiplayedReports++;
-            }
+            case self::OUTPUT_DEFAULT:  
+                self::printBulkReportDetail($response, $fileName);
+                Console::log();
+                self::printFooter($time);
+                break;
+
+            case self::OUTPUT_PLAINTEXT:
+                $nbSavedReports = isset($response->data->savedReports) ? $response->data->savedReports : 0;
+                echo $nbSavedReports . PHP_EOL;
+                break;
+
         }
-        Console::log();
-        self::printFooter($time);
     }
 
     /**
@@ -572,35 +393,46 @@ class AbuseIPDBClient extends ShellUtils
      */
     protected static function clearIP(array $arguments)
     {
-        $ip      = self::getArgumentValue($arguments,'E', 'clear');
-
+        $ip = self::getArgumentValue($arguments,'E', 'clear');
         self::printTitle(Console::text('  ► Clear reports for IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white'));
 
         // Peforms request 
         self::printTempMessage();
-        $timeStart = microtime(true); // request startime 
+        $timeStart = microtime(true);
         $response = self::$api->clearAddress($ip)->getObject();     
-        $timeEnd = microtime(true);  // request end time 
+        $timeEnd = microtime(true);
         $time = $timeEnd - $timeStart; // request time
         self::clearTempMessage();
 
         // check for errors / empty response
         if (self::printErrors($response)){
             self::printFooter($time);
-            self::safeExit(1);
+            Program::exit(1);
         }
-
-        // ✓ Done: print deleted report number 
-        Console::log(
-            Console::text('   ✓', 'green') . 
-            Console::text(' Successfull clear request for IP: [', 'white') .
-            Console::text($ip, 'lightyellow') .
-            Console::text(']', 'white')
-        );
         
-        self::printResult('     Deleted reports: ', $response->data->numReportsDeleted ?? 0, 'lightyellow');
-        Console::log();
-        self::printFooter($time);
+        // ✓ Done: print deleted report number 
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($response, JSON_PRETTY_PRINT);
+                break;
+       
+            case self::OUTPUT_DEFAULT:  
+                Console::log(
+                    Console::text('   ✓', 'green') . 
+                    Console::text(' Successfull clear request for IP: [', 'white') .
+                    Console::text($ip, 'lightyellow') .
+                    Console::text(']', 'white')
+                );
+                self::printResult('     Deleted reports: ', $response->data->numReportsDeleted ?? 0, 'lightyellow');
+                Console::log();
+                self::printFooter($time);
+                break;
+
+            case self::OUTPUT_PLAINTEXT:
+                echo ($response->data->numReportsDeleted ?? 0) . PHP_EOL;
+                break;
+
+        }
     }
 
     /**
@@ -614,65 +446,60 @@ class AbuseIPDBClient extends ShellUtils
      */
     protected static function getBlacklist(array $arguments)
     {
-        $plainText  = self::inArguments($arguments,'p','plaintext');  
+        self::printTitle(Console::text('  ► Get Blacklist ', 'darkgray'));
 
-        if (!$plainText){
-            self::printTitle(Console::text('  ► Get Blacklist ', 'darkgray'));
-        }
-
+        $plainText  = self::$outputFormat === self::OUTPUT_PLAINTEXT; 
         $limit      = self::getNumericParameter($arguments,'l', 'limit', 1000);
         $scoreMin   = self::getNumericParameter($arguments,'s', 'score', 100);
-
-        if (!$plainText){
-            self::printTempMessage();
-        }
-
+        
+        self::printTempMessage();
+        
         // do request 
-        $timeStart = microtime(true);           // request startime 
-        $response = self::$api->blacklist($limit, $plainText, $scoreMin);     // perform request
-        $timeEnd = microtime(true);                         // request end time 
-        $time = $timeEnd - $timeStart;                      // request time
+        $timeStart = microtime(true);
+        $response = self::$api->blacklist($limit, $plainText, $scoreMin);
+        $timeEnd = microtime(true);
+        $time = $timeEnd - $timeStart; // request time
 
-        if (!$plainText){
-            self::clearTempMessage();
-        }
-
+        self::clearTempMessage();
+    
         // response could be json on error, while plaintext flag is set
         $decodedResponse = $response->getObject();
-        
-        if ($plainText && $response->hasError()){
-            self::safeExit(1);
+        if (self::printErrors($decodedResponse, false)){
+            self::printFooter($time);
+            Program::exit(1);
         }
 
-        if (!$plainText && self::printErrors($decodedResponse)){
-            self::printFooter($time);
-            self::safeExit(1);
-        }
+        // ✓ Done: print deleted report number 
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($response, JSON_PRETTY_PRINT);
+                break;
+       
+            case self::OUTPUT_DEFAULT:  
+                 // print list
+                self::printResult('  List generated at: ', self::getDate($decodedResponse->meta->generatedAt), 'lightyellow', '');
+                Console::log();
+                foreach ($decodedResponse->data as $report){
+                    $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
+                    $defaultColor = self::getScoreColor($score);
 
-        if ($plainText){
-            // echo response "as is"
-            Console::log($response->getPlaintext());
+                    $line  = Console::text('    →', $defaultColor);
+                    $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
+                    $line .= self::printResult(' | Last reported at: ', self::getDate($report->lastReportedAt), $defaultColor, '', false);
+                    $line .= Console::text(' | Confidence score: ', 'white');
+                    $line .= self::getScoreBadge($score);
+                    Console::log($line);
+                }
 
-        } else {
-            // print list
-            self::printResult('  List generated at: ', self::getDate($decodedResponse->meta->generatedAt), 'lightyellow', '');
-            Console::log();
+                Console::log();
+                self::printFooter($time);
+                break;
 
-            foreach ($decodedResponse->data as $report){
-                $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
-                $defaultColor = self::getScoreColor($score);
+            case self::OUTPUT_PLAINTEXT:
+                // echo response "as is"
+                Console::log($response->getPlaintext());
+                break;
 
-                $line  = Console::text('    →', $defaultColor);
-                $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
-                $line .= self::printResult(' | Last reported at: ', self::getDate($report->lastReportedAt), $defaultColor, '', false);
-                $line .= Console::text(' | Confidence score: ', 'white');
-                $line .= self::getScoreBadge($score);
-                Console::log($line);
-            }
-        
-            // footer
-            Console::log();
-            self::printFooter($time);
         }
     }
 
@@ -685,7 +512,7 @@ class AbuseIPDBClient extends ShellUtils
      * 
      * @return void
      */
-    protected static function checkBlock($arguments)
+    protected static function checkBlock(array $arguments)
     {
         $network  = self::getArgumentValue($arguments,'K', 'check-block');
 
@@ -705,60 +532,37 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($check)){
             self::printFooter($time);
-            self::safeExit(1);
+            Program::exit(1);
         }
 
-        self::printResult(Console::pad('   Network Address:', 23), $check->data->networkAddress, 'lightyellow');
-        self::printResult(Console::pad('   Netmask:', 23), $check->data->netmask, 'lightyellow');
-        self::printResult(Console::pad('   Min Address:', 23), $check->data->minAddress, 'lightyellow');
-        self::printResult(Console::pad('   Max Address:', 23), $check->data->maxAddress, 'lightyellow');
-        self::printResult(Console::pad('   Possible Hosts:', 23), $check->data->numPossibleHosts, 'lightyellow');
-        self::printResult(Console::pad('   Address SpaceDesc:', 23), $check->data->addressSpaceDesc, 'lightyellow');
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($check, JSON_PRETTY_PRINT);
+                break;
+       
+            case self::OUTPUT_DEFAULT:  
+                self::printCheckBlockDetail($check);
+                self::printCheckBlockReportedIP($check,$maxAge,$limit);
+                Console::log();
+                self::printFooter($time);
+                break;
 
-        // print reported addresses
-        $nbReports = isset($check->data->reportedAddress) ? count($check->data->reportedAddress) : 0;
-        
-        if ($nbReports > 0){
-            self::printResult(Console::pad('   Reported addresses:', 23), $nbReports, 'lightyellow');
-            $numberDiplayedReports = 0;
-            $defaultColor = 'lightyellow'; // reset color for last reports
-        
-            foreach ($check->data->reportedAddress as $report){
-                $score = empty($report->abuseConfidenceScore) ? 0 : $report->abuseConfidenceScore;
-                $defaultColor = self::getScoreColor($score); // color based on score
+            case self::OUTPUT_PLAINTEXT:
+                $nbReports = isset($check->data->reportedAddress) ? count($check->data->reportedAddress) : 0;
+                if ($nbReports > 0) {
+                    $numberDiplayedReports = 0;
+                    foreach ($check->data->reportedAddress as $report){
+                        echo ($report->ipAddress) . ' ' . $report->abuseConfidenceScore . PHP_EOL;
 
-                $line  = Console::text('   →', $defaultColor);
-                $line .= self::printResult(' IP: ', $report->ipAddress, $defaultColor, '', false);
-                $line .= self::printResult(' Country: ', $report->countryCode , $defaultColor, '', false);
-                $line .= Console::text(' | Confidence score: ', 'white');
-                $line .= self::getScoreBadge($score);
-                $line .= self::printResult(' Total reports: ', $report->numReports, $defaultColor, '', false);
-                $line .= self::printResult(' Last reported at: ', self::getDate($report->mostRecentReport), $defaultColor, '', false);
-                Console::log($line);
-
-                // counter
-                $numberDiplayedReports++;
-
-                if ($numberDiplayedReports === $limit || $numberDiplayedReports === $nbReports) {
-                    $line  = Console::text('      (', 'white');
-                    $line .= Console::text($numberDiplayedReports, 'lightyellow');
-                    $line .= Console::text('/', 'white');
-                    $line .= Console::text($nbReports, 'lightyellow');
-                    $line .= Console::text($numberDiplayedReports > 1 ? ' IPs displayed)': ' IP displayed)', 'white');
-                    Console::log($line);
-                    break;
+                        // counter
+                        $numberDiplayedReports++;
+                        if ($numberDiplayedReports === $limit) {
+                            break;
+                        }
+                    }
                 }
-            }
-
-        } else {
-            // no reports
-            $day = $maxAge > 1 ? 'in last '. $maxAge . ' days': ' today';
-            Console::log( Console::text('    ✓', 'green') . Console::text(' No IP reported ' . $day));
+                break;
         }
-
-        // footer
-        Console::log();
-        self::printFooter($time);
     }
 
     /**
@@ -770,18 +574,18 @@ class AbuseIPDBClient extends ShellUtils
      * 
      * @return void
      */
-    protected static function checkIP($arguments)
+    protected static function checkIP(array $arguments)
     {
         $ip                 = self::getArgumentValue($arguments,'C', 'check');
-
+        
         self::printTitle(Console::text('  ► Check IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white') . Console::text('', 'darkgray'));
-
+        
         $verbose            = self::inArguments($arguments,'v', 'verbose');
         $maxAge             = self::getNumericParameter($arguments, 'd', 'days', 30);
         $maxReportsNumber   = self::getNumericParameter($arguments,'l', 'limit', 10);
+        $ip                 = self::getArgumentValue($arguments,'C', 'check');
 
         self::printTempMessage();
-
         $timeStart = microtime(true);                                           
         $check = self::$api->check($ip, $maxAge, $verbose)->getObject();        
         $timeEnd = microtime(true);                                              
@@ -791,112 +595,31 @@ class AbuseIPDBClient extends ShellUtils
         // check for errors / empty response
         if (self::printErrors($check)){
             self::printFooter($time);
-            self::safeExit(1);
+            Program::exit(1);
         }
 
         // score and data color (depending of abuseConfidenceScore)
-        $score = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
-        $defaultColor = self::getScoreColor($score);
-        $line = Console::text(Console::pad('   Confidence score:', 23), 'white');
-        $line .= self::getScoreBadge($score);
-        Console::log($line);
-      
-//      self::printResult('   isPublic', $check->data->isPublic, $defaultColor);
-//      self::printResult('   ipVersion', $check->data->ipVersion, $defaultColor);
-        $line = self::printResult(Console::pad('   Whitelisted:', 23), $check->data->isWhitelisted ? 'true': 'false', $defaultColor, '', false);
-        $line .= $check->data->isWhitelisted ? Console::text(' ★', 'green') : ''; 
-        Console::log($line);
+        $score          = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
+
+        switch (self::$outputFormat){
+            case self::OUTPUT_JSON:
+                echo json_encode($check, JSON_PRETTY_PRINT);
+                break;
        
-        self::printResult(Console::pad('   Country code:', 23), $check->data->countryCode, $defaultColor);
-        
-        if (!empty($check->data->countryName)){
-            self::printResult(Console::pad('   Country name:', 23), $check->data->countryName, $defaultColor);
+            case self::OUTPUT_DEFAULT:  
+                $defaultColor = self::getScoreColor($score);
+                self::printCheckScore($check);
+                self::printCheckDetail($check, $defaultColor);
+                self::printCheckReports($check, $maxAge, $verbose);
+                self::printCheckLastReports($check, $verbose, $maxReportsNumber);
+                Console::log();
+                self::printFooter($time);
+                break;
+
+            case self::OUTPUT_PLAINTEXT:
+                echo ($check->data->abuseConfidenceScore ?? 0) . PHP_EOL;
+                break;
+
         }
-
-        self::printResult(Console::pad('   ISP:', 23), $check->data->isp, $defaultColor);
-
-        if ($check->data->usageType){
-            $line = self::printResult(Console::pad('   Usage type:', 23), $check->data->usageType, $defaultColor, '', false);
-            $line .= $check->data->usageType === 'Reserved' ? Console::text(' ◆', 'green') : '';
-            Console::log($line);
-        }
-
-        $hostames = implode(', ', array_filter($check->data->hostnames)) ?? null;
-        if (!empty($hostames)){
-            self::printResult(Console::pad('   Hostname(s):', 23), $hostames, $defaultColor);
-        }
-
-        self::printResult(Console::pad('   Domain:', 23), $check->data->domain, $defaultColor);
-
-        $nbReport = $check->data->totalReports && is_numeric($check->data->totalReports) ? intval($check->data->totalReports) : 0;
-        
-        if ($nbReport > 0 ){
-            $line  = self::printResult(Console::pad('   Total reports:', 23), $nbReport, $defaultColor, '', false);
-            $line .= self::printResult(' from ', $check->data->numDistinctUsers, $defaultColor, '', false);
-            $line .= Console::text($nbReport > 0 ? ' distinct users': ' user', 'white');
-            Console::log($line);
-
-        } else {
-            // no reports
-            $day = $maxAge > 1 ? 'in last '. $maxAge . ' days': ' today';
-            Console::log( Console::text('   ✓', 'green') . Console::text(' Not reported ' . $day));
-        }
-        
-        if (!empty($check->data->lastReportedAt)){
-            self::printResult(Console::pad('   Last reported at:', 23), self::getDate($check->data->lastReportedAt), $defaultColor);
-        }
-
-        // print last reports
-        if ($verbose){
-            $nbLastReports = isset($check->data->reports) ? count($check->data->reports) : 0;
-            
-            if ($nbLastReports > 0){
-                Console::log('   Last reports:', 'white');
-                $numberDiplayedReports = 0;
-                $defaultColor = 'lightyellow'; // reset color for last reports
-            
-                foreach ($check->data->reports as $lastReport){
-                    $categories = [];
-                    foreach (array_filter($lastReport->categories) as $catId){
-                        $cat = self::$api->getCategoryNamebyId($catId)[0];
-                        if ($cat !== false) {
-                            $categories[] = $cat;
-                        }
-                    }
-
-                    $line  = Console::text('    →', $defaultColor);
-                    $line .= self::printResult(' reported at: ', self::getDate($lastReport->reportedAt), $defaultColor, '', false);
-              //    $line .= self::printResult(' by user: ', $lastReport->reporterId, $defaultColor, '', false);
-                    if (isset($lastReport->reporterCountryCode) && isset($lastReport->reporterCountryName)){
-                        $line .= Console::text(' from: ', 'white');
-                        $line .= self::printResult('', $lastReport->reporterCountryCode, $defaultColor, '', false);
-                        $line .= Console::text(' - ', 'white');
-                        $line .= self::printResult('', $lastReport->reporterCountryName, $defaultColor, '', false);
-                    }
-                    $line .= Console::text(' with categor' .  (count($categories) > 1 ? "ies: " : "y: "), 'white');
-                    foreach ($categories as $key => $cat) {
-                        $line .= Console::text($key==0 ? '' : ',' , 'white') . Console::text($cat, $defaultColor);
-                    }
-                    Console::log($line);
-
-                    // counter
-                    $numberDiplayedReports++;
-                    if ($numberDiplayedReports === $maxReportsNumber || $numberDiplayedReports === $nbLastReports) {
-                        $line  = Console::text('      (', 'white');
-                        $line .= Console::text($numberDiplayedReports, $defaultColor);
-                        $line .= Console::text('/', 'white');
-                        $line .= Console::text($nbLastReports, $defaultColor);
-                        $line .= Console::text($numberDiplayedReports > 1 ? ' reports displayed)': ' report displayed)', 'white');
-                        Console::log($line);
-                        break;
-                    }
-                }
-            }
-        }
-
-        // footer
-        Console::log();
-        self::printFooter($time);
     }
-
 }

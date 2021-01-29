@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.9
+ * @version    0.9.10
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -59,7 +59,7 @@ trait UtilsTrait
         return $score > 50 ? 'lightred' : ($score > 0 ? 'yellow' : 'green') ;
     }
 
-  
+   
     /**
      * Helper function to get the value of an argument
      *  
@@ -79,7 +79,7 @@ trait UtilsTrait
     }
 
     /**
-     * helper function to check if a argument is given
+     * helper function to check if a given argument is given
      * 
      * @access protected
      * @static
@@ -94,16 +94,39 @@ trait UtilsTrait
           return array_key_exists($shortArg, $arguments) || array_key_exists($longArg, $arguments);
     }
 
-    /**
-     * Exit with code 0 or given exit code
-     * 
-     * @access protected
+    /** 
+     * Load and returns decoded Json from given file  
+     *
+     * @access public
      * @static
-     * 
-     * @return void
+	 * @param string    $filePath       The file's full path
+	 * @param bool      $throwError     Throw error on true or silent process. Default is true
+     *  
+	 * @return object|null 
+     * @throws \Exception
+     * @throws \LogicException
      */
-    protected static function safeExit(int $exitCode = 0)
+    protected static function loadJsonFile(string $filePath, bool $throwError = true)
     {
-        exit($exitCode);
+        // check file exists
+        if (!file_exists($filePath) || !is_file($filePath)){
+           if ($throwError) {
+                throw new \Exception('Config file not found');
+           }
+           return null;  
+        }
+
+        // get and parse content
+        $content = utf8_encode(file_get_contents($filePath));
+        $json    = json_decode($content);
+
+        // check for errors
+        if ($json == null && json_last_error() != JSON_ERROR_NONE && $throwError) {
+            throw new \LogicException(sprintf("Failed to parse config file Error: '%s'", json_last_error_msg()));
+        }
+
+        return $json;        
     }
+
+
 }
