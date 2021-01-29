@@ -19,7 +19,6 @@
  */
 namespace Kristuff\AbuseIPDB;
 
-use Kristuff\AbuseIPDB\SilentApiHandler;
 use Kristuff\Mishell\Console;
 use Kristuff\Mishell\Program;
 
@@ -302,7 +301,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
         
         // check for errors / empty response
-        if (self::printErrors($report)){
+        if (self::parseErrors($report)){
             self::printFooter();
             Program::exit(1);
         }
@@ -357,7 +356,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::printErrors($response)){
+        if (self::parseErrors($response)){
             self::printFooter();
             Program::exit(1);
         }
@@ -369,7 +368,9 @@ class AbuseIPDBClient extends AbstractClient
                 break;
         
             case self::OUTPUT_DEFAULT:  
-                self::printBulkReportDetail($response, $fileName);
+                self::printBulkReportDetail($fileName);
+                self::printBulkReportSavedReports($response);
+                self::printBulkReportErrors($response);
                 Console::log();
                 self::printFooter($time);
                 break;
@@ -405,7 +406,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::printErrors($response)){
+        if (self::parseErrors($response)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -464,7 +465,7 @@ class AbuseIPDBClient extends AbstractClient
     
         // response could be json on error, while plaintext flag is set
         $decodedResponse = $response->getObject();
-        if (self::printErrors($decodedResponse, false)){
+        if (self::parseErrors($decodedResponse, false)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -530,7 +531,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::printErrors($check)){
+        if (self::parseErrors($check)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -593,7 +594,7 @@ class AbuseIPDBClient extends AbstractClient
         self::clearTempMessage();
 
         // check for errors / empty response
-        if (self::printErrors($check)){
+        if (self::parseErrors($check)){
             self::printFooter($time);
             Program::exit(1);
         }
@@ -610,7 +611,7 @@ class AbuseIPDBClient extends AbstractClient
                 $defaultColor = self::getScoreColor($score);
                 self::printCheckScore($check);
                 self::printCheckDetail($check, $defaultColor);
-                self::printCheckReports($check, $maxAge, $verbose);
+                self::printCheckReports($check, $maxAge, $defaultColor);
                 self::printCheckLastReports($check, $verbose, $maxReportsNumber);
                 Console::log();
                 self::printFooter($time);

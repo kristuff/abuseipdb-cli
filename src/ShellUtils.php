@@ -255,7 +255,7 @@ abstract class ShellUtils
     }
 
     /**
-     * Check and print errors in API response. Null response object is considered as no errors
+     * Check and print errors in API response. 
      * 
      * @access protected
      * @static
@@ -264,54 +264,21 @@ abstract class ShellUtils
      * 
      * @return bool     
      */
-    protected static function printErrors($response, bool $checkForEmpty = true)
+    protected static function parseErrors(object $response, bool $checkForEmpty = true)
     {
         if (isset($response) && isset($response->errors)){
-
             switch (self::$outputFormat){
                 case self::OUTPUT_DEFAULT:
-                    // top error badge    
-                    Console::log('  ' .   Console::text(' ERROR ','white', 'red'));
-
-                    $num = 0;
-                    // errors is an array, could have more than one error..
-                    foreach ($response->errors as $err){
-                        $num++;
-
-                        Console::log(Console::text('   ✗', 'red') .  self::printResult(' Number:    ', $num, 'lightyellow','', false));
-                        self::printResult('     Status:    ', $err->status ?? null, 'lightyellow','');    
-                        
-                        if (!empty($err->source) && !empty($err->source->parameter)){
-                            self::printResult('     Parameter: ', $err->source->parameter, 'lightyellow');    
-                        }
-                        self::printResult('     Title:     ', $err->title ?? null, 'lightyellow');    
-                        self::printResult('     Detail:    ', $err->detail ?? null, 'lightyellow');    
-
-                        // separate errors
-                        if (count($response->errors) > 1){
-                            Console::log('   ---');
-                        }
-
-                    }
-                    Console::log();
+                    self::printFormattedErrors($response);
                     break;
 
                 case self::OUTPUT_PLAINTEXT:
-                    foreach ($response->errors as $err){
-                        $text = 'Error: ';
-                        $text .= !empty($err->title) ? ' title: ' . $err->title : '';
-                        $text .= !empty($err->status) ? ' status: ' . $err->status : '';
-                        $text .= !empty($err->source) && !empty($err->source->parameter) ? ' parameter: ' . $err->source->parameter : '';
-                        $text .= !empty($err->detail) ? ' detail: ' . $err->detail : '';
-                        $text .= PHP_EOL;
-                        echo $text;
-                    }                
+                    self::printPlainTextErrors($response);
                     break;
 
                 case self::OUTPUT_JSON:
                     echo json_encode($response, JSON_PRETTY_PRINT);
                     break;
-
             }
             return true;
         }
@@ -323,6 +290,65 @@ abstract class ShellUtils
         }
 
         return false;    
+
+    }
+
+    /**
+     * 
+     * @access protected
+     * @static
+     * @param object     $response       
+     * 
+     * @return void     
+     */
+    protected static function printFormattedErrors(object $response)
+    {
+        // top error badge    
+        Console::log('  ' .   Console::text(' ERROR ','white', 'red'));
+
+        $num = 0;
+        // errors is an array, could have more than one error..
+        foreach ($response->errors as $err){
+            $num++;
+
+            Console::log(Console::text('   ✗', 'red') .  self::printResult(' Number:    ', $num, 'lightyellow','', false));
+            self::printResult('     Status:    ', $err->status ?? null, 'lightyellow','');    
+            
+            if (!empty($err->source) && !empty($err->source->parameter)){
+                self::printResult('     Parameter: ', $err->source->parameter, 'lightyellow');    
+            }
+            self::printResult('     Title:     ', $err->title ?? null, 'lightyellow');    
+            self::printResult('     Detail:    ', $err->detail ?? null, 'lightyellow');    
+
+            // separate errors
+            if (count($response->errors) > 1){
+                Console::log('   ---');
+            }
+
+        }
+        Console::log();           
+    }
+
+    /**
+     * Check and print errors in API response. Null response object is considered as no errors
+     * 
+     * @access protected
+     * @static
+     * @param object     $response       
+     * 
+     * @return void     
+     */
+    protected static function printPlainTextErrors(object $response)
+    {
+        foreach ($response->errors as $err){
+            $text = 'Error: ';
+            $text .= !empty($err->title) ? ' title: ' . $err->title : '';
+            $text .= !empty($err->status) ? ' status: ' . $err->status : '';
+            $text .= !empty($err->source) && !empty($err->source->parameter) ? ' parameter: ' . $err->source->parameter : '';
+            $text .= !empty($err->detail) ? ' detail: ' . $err->detail : '';
+            $text .= PHP_EOL;
+            echo $text;
+        }
     }
 
     /**
@@ -334,7 +360,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function error($error)
+    protected static function error(string $error)
     {
         if (self::isDefaultOuput()) {
             // ✗

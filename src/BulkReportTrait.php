@@ -28,7 +28,7 @@ use Kristuff\Mishell\Console;
 trait BulkReportTrait
 {
     /**
-     * Print confidence score 
+     * Print report detail
      * 
      * @access protected
      * @static
@@ -37,23 +37,49 @@ trait BulkReportTrait
      * 
      * @return void
      */
-    protected static function printBulkReportDetail(object $response, string $fileName)
+    protected static function printBulkReportDetail(string $fileName)
     {
-        // ✓ Done
         Console::log(
             Console::text('   Bulk report for file: [', 'white') .
             Console::text($fileName, 'lightyellow') .
             Console::text('] done!', 'white')
         );
+    }
 
-        $nbErrorReports = isset($response->data->invalidReports) ? count($response->data->invalidReports) : 0;
+    /**
+     * Print report SavedReports
+     * 
+     * @access protected
+     * @static
+     * @param object    $response
+     * @param string    $fileName
+     * 
+     * @return void
+     */
+    protected static function printBulkReportSavedReports(object $response)
+    {
         $nbSavedReports = isset($response->data->savedReports) ? $response->data->savedReports : 0;
         $savedColor = $nbSavedReports > 0 ? 'green' : 'red';
-        $errorColor = $nbErrorReports > 0 ? 'red' : 'green';
         $savedIcon  = $nbSavedReports > 0 ? '✓' : '✗';
+        Console::log(Console::text('   ' . $savedIcon, $savedColor) . self::printResult(' Saved reports:    ', $nbSavedReports, $savedColor, '', false));
+    }
+
+     /**
+     * Print report errors
+     * 
+     * @access protected
+     * @static
+     * @param object    $response
+     * @param string    $fileName
+     * 
+     * @return void
+     */
+    protected static function printBulkReportErrors(object $response)
+    {
+        $nbErrorReports = isset($response->data->invalidReports) ? count($response->data->invalidReports) : 0;
+        $errorColor = $nbErrorReports > 0 ? 'red' : 'green';
         $errorIcon  = $nbErrorReports > 0 ? '✗' : '✓';
 
-        Console::log(Console::text('   ' . $savedIcon, $savedColor) . self::printResult(' Saved reports:    ', $nbSavedReports, $savedColor, '', false));
         Console::log(Console::text('   ' . $errorIcon, $errorColor) . self::printResult(' Invalid reports:  ', $nbErrorReports, $errorColor, '', false));
 
         if ($nbErrorReports > 0){
