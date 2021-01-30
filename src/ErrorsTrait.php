@@ -66,4 +66,22 @@ trait ErrorsTrait
         return !empty($error->$field) ? ' ' . $field . ': ' . $error->$field : '';
     }
 
+    /**
+     * Check and print errors in API response. 
+     * 
+     * @access protected
+     * @static
+     * @param object     $response       
+     * 
+     * @return bool     
+     */
+    protected static function checkForEmpty(object $response)
+    {
+        // check for empty response ?
+        if ( empty($response) || empty($response->data) ){
+            self::error('An unexpected error occurred.');
+            return true;
+        }
+        return false;    
+    }
 }
