@@ -235,7 +235,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function checkForEmpty(object $response): bool
+    protected static function checkForEmpty(?object $response = null): bool
     {
         // check for empty response ?
         if ( empty($response) || empty($response->data) ){
