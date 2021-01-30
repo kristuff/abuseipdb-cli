@@ -33,7 +33,7 @@ abstract class ShellUtils
     /**
      * helper functions
      */
-    use UtilsTrait;
+    use UtilsTrait, ErrorsTrait;
   
     const OUTPUT_JSON       = 'json';
     const OUTPUT_DEFAULT    = 'default';
@@ -269,7 +269,6 @@ abstract class ShellUtils
         return $checkForEmpty ? self::parseErrors($response) || self::checkForEmpty($response) : self::parseErrors($response);
     }
 
-
     /**
      * Check and print errors in API response. 
      * 
@@ -351,31 +350,8 @@ abstract class ShellUtils
             if (count($response->errors) > 1){
                 Console::log('   ---');
             }
-
         }
         Console::log();           
-    }
-
-    /**
-     * Check and print errors in API response. Null response object is considered as no errors
-     * 
-     * @access protected
-     * @static
-     * @param object     $response       
-     * 
-     * @return void     
-     */
-    protected static function printPlainTextErrors(object $response)
-    {
-        foreach ($response->errors as $err){
-            $text = 'Error: ';
-            $text .= !empty($err->title) ? ' title: ' . $err->title : '';
-            $text .= !empty($err->status) ? ' status: ' . $err->status : '';
-            $text .= !empty($err->source) && !empty($err->source->parameter) ? ' parameter: ' . $err->source->parameter : '';
-            $text .= !empty($err->detail) ? ' detail: ' . $err->detail : '';
-            $text .= PHP_EOL;
-            echo $text;
-        }
     }
 
     /**
@@ -403,7 +379,7 @@ abstract class ShellUtils
     }
     
     /**
-     * helper to validate a condition or exit with an error
+     * Helper to validate a condition or exit with an error
      * 
      * @access protected
      * @static

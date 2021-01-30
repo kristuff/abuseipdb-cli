@@ -20,8 +20,7 @@
 namespace Kristuff\AbuseIPDB;
 
 /**
- * Class Utils
- * 
+ * Trait Utils
  */
 trait UtilsTrait
 {
@@ -127,6 +126,4 @@ trait UtilsTrait
 
         return $json;        
     }
-
-
 }
