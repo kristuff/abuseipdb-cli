@@ -184,7 +184,7 @@ abstract class ShellErrorHandler extends ShellUtils
         return $defaultValue;
     }
 
-        /**
+    /**
      * Check and print errors in API response. Null response object is considered as no errors
      * 
      * @access protected
@@ -214,7 +214,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * @param object     $error       
      * @param string     $field       
      * 
-     * @return void     
+     * @return string     
      */
     private static function getErrorDetail(object $error, string $field, ?string $parent = null)
     {
@@ -226,7 +226,7 @@ abstract class ShellErrorHandler extends ShellUtils
     }
 
     /**
-     * Check and print errors in API response. 
+     * Check if response is empty
      * 
      * @access protected
      * @static

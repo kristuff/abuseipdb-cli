@@ -37,7 +37,7 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string      
      */
-    const LONG_ARGUMENTS = ['output:','save-key:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:','bulk-report:', 'help', 'verbose', 'score:','version'];
+    const LONG_ARGUMENTS = ['output:', 'save-key:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version'];
     
     /**
      * @var string
@@ -52,7 +52,7 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string
      */
-    protected static $keyPath = __DIR__ .'/../config/key.json';
+    protected static $keyPath = __DIR__.'/../config/key.json';
 
     /**
      * @var array
@@ -89,17 +89,17 @@ abstract class AbstractClient extends ShellErrorHandler
      */
     protected static function parseCommand(array $arguments, string $keyPath)
     {
-        foreach( self::$basicCommands as $cmd){
+        foreach(self::$basicCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
-                call_user_func(__NAMESPACE__ .'\AbuseIPDBClient::' . $cmd[2], $cmd[2]=== 'registerApiKey' ? $arguments : null);
+                call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], $cmd[2]=== 'registerApiKey' ? $arguments : null);
                 return true;
             }
         }
-        foreach( self::$mainCommands as $cmd){
+        foreach(self::$mainCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
                 self::createHandler($keyPath);
                 self::setOutputFormat($arguments);                    
-                call_user_func(__NAMESPACE__ .'\AbuseIPDBClient::' . $cmd[2], $arguments);
+                call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], $arguments);
                 return true;
             }
         }
@@ -120,7 +120,7 @@ abstract class AbstractClient extends ShellErrorHandler
     {
         $given = self::getArgumentValue($arguments, 'o', 'output') ?? 'default';
         $output = empty($given) ? 'default' : $given; 
-        self::validate(in_array($output, ['default', 'json', 'plaintext']),'Invalid output argument given.');
+        self::validate(in_array($output, ['default', 'json', 'plaintext']), 'Invalid output argument given.');
         self::$outputFormat = $output ;
     }
 
@@ -138,7 +138,7 @@ abstract class AbstractClient extends ShellErrorHandler
     protected static function createHandler(string $keyPath)
     {
         self::$keyPath = $keyPath; 
-        self::validate( self::checkForInstall(), 'Key file missing.');
+        self::validate(self::checkForInstall(), 'Key file missing.');
         try {
             self::$api = self::fromConfigFile(self::$keyPath);
         } catch (\Exception $e) {
@@ -176,19 +176,19 @@ abstract class AbstractClient extends ShellErrorHandler
     {
         // check file exists
         if (!file_exists($configPath) || !is_file($configPath)){
-            throw new \InvalidArgumentException('The file [' . $configPath . '] does not exist.');
+            throw new \InvalidArgumentException('The file ['.$configPath.'] does not exist.');
         }
 
         // check file is readable
         if (!is_readable($configPath)){
-            throw new InvalidPermissionException('The file [' . $configPath . '] is not readable.');
+            throw new InvalidPermissionException('The file ['.$configPath.'] is not readable.');
         }
 
         $keyConfig = self::loadJsonFile($configPath);
         $selfIps = [];
         
         // Look for other optional config files in the same directory 
-        $selfIpsConfigPath = pathinfo($configPath, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR . 'self_ips.json';
+        $selfIpsConfigPath = pathinfo($configPath, PATHINFO_DIRNAME).DIRECTORY_SEPARATOR.'self_ips.json';
         if (file_exists($selfIpsConfigPath)){
             $selfIps = self::loadJsonFile($selfIpsConfigPath)->self_ips;
         }

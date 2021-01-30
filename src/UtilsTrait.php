@@ -83,8 +83,8 @@ trait UtilsTrait
      * @access protected
      * @static
      * @param array     $arguments      The list of arguments     
-     * @param string     $shortArg       The short argument name
-     * @param string     $longArg        The long argument name
+     * @param string    $shortArg       The short argument name
+     * @param string    $longArg        The long argument name
      * 
      * @return bool     True if the short or long argument exist in the arguments array, otherwise false
      */
@@ -98,8 +98,8 @@ trait UtilsTrait
      *
      * @access public
      * @static
-	 * @param string    $filePath       The file's full path
-	 * @param bool      $throwError     Throw error on true or silent process. Default is true
+     * @param string    $filePath       The file's full path
+     * @param bool      $throwError     Throw error on true or silent process. Default is true
      *  
 	 * @return object|null 
      * @throws \Exception

@@ -80,7 +80,7 @@ class AbuseIPDBClient extends AbstractClient
         $data = json_encode(['api_key' => $key]);
        
         if (file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
-            self::error('An error occured during writing config file. Make sure to give the appropriate permissions do the config directory.');
+            self::error('An error occurred when writing config file. Make sure to give the appropriate permissions to the config directory.');
             self::printFooter();
             Program::exit(1);
         }
@@ -577,7 +577,7 @@ class AbuseIPDBClient extends AbstractClient
      */
     protected static function checkIP(array $arguments)
     {
-        $ip                 = self::getArgumentValue($arguments,'C', 'check');
+        $ip = self::getArgumentValue($arguments,'C', 'check');
         
         self::printTitle(Console::text('  ► Check IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white') . Console::text('', 'darkgray'));
         
@@ -600,7 +600,7 @@ class AbuseIPDBClient extends AbstractClient
         }
 
         // score and data color (depending of abuseConfidenceScore)
-        $score          = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
+        $score = empty($check->data->abuseConfidenceScore) ? 0 : $check->data->abuseConfidenceScore;
 
         switch (self::$outputFormat){
             case self::OUTPUT_JSON:
