@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.10
+ * @version    0.9.11
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -39,7 +39,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function hasErrors(object $response, bool $checkForEmpty = true): bool
+    protected static function hasErrors(?object $response = null, bool $checkForEmpty = true): bool
     {
         return $checkForEmpty ? self::parseErrors($response) || self::checkForEmpty($response) : self::parseErrors($response);
     }
@@ -54,7 +54,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    private static function parseErrors(object $response): bool
+    private static function parseErrors(?object $response = null): bool
     {
         if (isset($response) && isset($response->errors)){
             switch (self::$outputFormat){
@@ -235,7 +235,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function checkForEmpty(object $response): bool
+    protected static function checkForEmpty(?object $response = null): bool
     {
         // check for empty response ?
         if ( empty($response) || empty($response->data) ){

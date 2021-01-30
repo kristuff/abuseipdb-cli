@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.10
+ * @version    0.9.11
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -125,10 +125,6 @@ abstract class ShellUtils
     protected static function printLogo(): void
     {
         if (self::isDefaultOuput()) {
-            //Console::log("   _       _    _         __  __                   ", "darkgray");
-            //Console::log("  | |___ _(_)__| |_ _  _ / _|/ _|                  ", "darkgray");
-            //Console::log("  | / / '_| (_-<  _| || |  _|  _|                  ", "darkgray");
-            //Console::log("  |_\_\_| |_/__/\__|\_,_|_| |_|                    ", "darkgray");
             Console::log("        _                 ___ ___ ___  ___        ", "darkgray");
             Console::log("   __ _| |__ _  _ ___ ___|_ _| _ \   \| _ )       ", "darkgray");
             Console::log("  / _` | '_ \ || (_-</ -_)| ||  _/ |) | _ \       ", "darkgray");
@@ -177,7 +173,11 @@ abstract class ShellUtils
         if (self::isDefaultOuput()) {
             Console::log();    
             Console::log( Console::text(' Kristuff/AbuseIPDB-client ', 'darkgray') . Console::text(' ' . AbuseIPDBClient::VERSION . ' ', 'white', 'blue')); 
-            Console::log(Console::text(' Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France | © 2020-2021 Kristuff', 'darkgray')); 
+            Console::log(Console::text(' Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France', 'darkgray')); 
+            Console::log(Console::text(' © 2020-2021 Kristuff (', 'darkgray').
+                Console::text('https://github.com/kristuff', 'darkgray', 'underlined').
+                Console::text(')', 'darkgray')
+            );
             Console::log();  
         }  
     }
@@ -258,7 +258,7 @@ abstract class ShellUtils
             $scoreBackgroundColor = 'red';
         } 
   
-        $badge = str_pad($score, 3, ' ',STR_PAD_LEFT); 
+        $badge = str_pad(strval($score), 3, ' ',STR_PAD_LEFT); 
         return Console::text($padding.$badge.$padding, $scoreforegroundColor, $scoreBackgroundColor);
     }
 }

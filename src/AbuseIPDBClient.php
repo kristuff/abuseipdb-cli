@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.10
+ * @version    0.9.11
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -170,7 +170,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(Console::text('   -C, --check ', 'white') . Console::text('IP', 'yellow', 'underline')); 
         Console::log('       Performs a check request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('network', 'yellow', 'underline')); 
+        Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('NETWORK', 'yellow', 'underline')); 
         Console::log('       Performs a check-block request for the given network. A valid subnet (v4 or v6) denoted with ', 'lightgray');
         Console::log('       CIDR notation is required.', 'lightgray');
         Console::log();    
@@ -223,7 +223,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
         Console::log(); 
         Console::log(Console::text('   -S, --save-key ', 'white') . Console::text('KEY', 'yellow', 'underline')); 
-        Console::log('       Save the given API key in the configuration file. Required writing permissions on the config directory. ', 'lightgray');
+        Console::log('       Save the given API key in the configuration file. Requires writing permissions on the config directory. ', 'lightgray');
         Console::log(); 
     }
 
@@ -471,7 +471,7 @@ class AbuseIPDBClient extends AbstractClient
     {
         self::printTitle(Console::text('  ► Get Blacklist ', 'darkgray'));
 
-        $plainText  = self::$outputFormat === self::OUTPUT_PLAINTEXT; 
+        $plainText  = (self::$outputFormat === self::OUTPUT_PLAINTEXT); 
         $limit      = self::getNumericParameter($arguments,'l', 'limit', 1000);
         $scoreMin   = self::getNumericParameter($arguments,'s', 'score', 100);
         
@@ -495,7 +495,7 @@ class AbuseIPDBClient extends AbstractClient
         // ✓ Done: print deleted report number 
         switch (self::$outputFormat){
             case self::OUTPUT_JSON:
-                echo json_encode($response, JSON_PRETTY_PRINT);
+                echo json_encode($decodedResponse, JSON_PRETTY_PRINT);
                 break;
        
             case self::OUTPUT_DEFAULT:  
