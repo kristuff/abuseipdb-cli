@@ -27,9 +27,8 @@ use Kristuff\Mishell\Program;
  * 
  * Abstract base class for main program
  */
-abstract class AbstractClient extends ShellUtils
+abstract class AbstractClient extends ShellErrorHandler
 {
-
     /**
      * @var string      
      */
