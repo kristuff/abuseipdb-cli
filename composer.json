@@ -1,6 +1,7 @@
 {
     "name": "kristuff/abuseipdb-cli",
     "description": "A CLI tool to check/report IP addresses with AbuseIPDB API V2",
+    "keywords": ["abuseIPDB", "API", "Client"],
     "type": "library",
     "license": "MIT",
     "authors": [

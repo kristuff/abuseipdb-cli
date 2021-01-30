@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.10
+ * @version    0.9.11
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -170,7 +170,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(Console::text('   -C, --check ', 'white') . Console::text('IP', 'yellow', 'underline')); 
         Console::log('       Performs a check request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('network', 'yellow', 'underline')); 
+        Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('NETWORK', 'yellow', 'underline')); 
         Console::log('       Performs a check-block request for the given network. A valid subnet (v4 or v6) denoted with ', 'lightgray');
         Console::log('       CIDR notation is required.', 'lightgray');
         Console::log();    
