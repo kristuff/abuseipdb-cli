@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -39,7 +39,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function hasErrors(object $response, bool $checkForEmpty = true )
+    protected static function hasErrors(object $response, bool $checkForEmpty = true): bool
     {
         return $checkForEmpty ? self::parseErrors($response) || self::checkForEmpty($response) : self::parseErrors($response);
     }
@@ -54,7 +54,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    private static function parseErrors(object $response)
+    private static function parseErrors(object $response): bool
     {
         if (isset($response) && isset($response->errors)){
             switch (self::$outputFormat){
@@ -83,7 +83,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return void     
      */
-    protected static function printFormattedErrors(object $response)
+    protected static function printFormattedErrors(object $response): void
     {
         // top error badge    
         Console::log('  ' .   Console::text(' ERROR ','white', 'red'));
@@ -119,7 +119,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return void
      */
-    protected static function error(string $error)
+    protected static function error(string $error): void
     {
         if (self::isDefaultOuput()) {
             // ✗
@@ -143,9 +143,9 @@ abstract class ShellErrorHandler extends ShellUtils
      * @param string    $message        Error message
      * @param bool      $print          True to print error. Default is true
      * 
-     * @return bool
+     * @return void
      */
-    protected static function validate(bool $condition, string $message, bool $print = true)
+    protected static function validate(bool $condition, string $message, bool $print = true): void
     {
         if ( !$condition ){
             if ($print && self::isDefaultOuput()) {
@@ -169,7 +169,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return int
      */
-    protected static function getNumericParameter(array $arguments, string $shortArg, string $longArg, int $defaultValue)
+    protected static function getNumericParameter(array $arguments, string $shortArg, string $longArg, int $defaultValue): int
     {
          if (self::inArguments($arguments,$shortArg, $longArg)){
             $val = self::getArgumentValue($arguments,$shortArg, $longArg);
@@ -193,7 +193,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return void     
      */
-    protected static function printPlainTextErrors(object $response)
+    protected static function printPlainTextErrors(object $response): void
     {
         foreach ($response->errors as $err){
             $text = 'Error: ';
@@ -213,10 +213,11 @@ abstract class ShellErrorHandler extends ShellUtils
      * @static
      * @param object     $error       
      * @param string     $field       
+     * @param string     $parent       
      * 
      * @return string     
      */
-    private static function getErrorDetail(object $error, string $field, ?string $parent = null)
+    private static function getErrorDetail(object $error, string $field, ?string $parent = null): string
     {
         if (!empty($parent)){
             return  !empty($error->$parent) && !empty($error->$parent->$field) ? ' ' . $field . ': ' . $error->$parent->$field : '';
@@ -234,7 +235,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function checkForEmpty(object $response)
+    protected static function checkForEmpty(object $response): bool
     {
         // check for empty response ?
         if ( empty($response) || empty($response->data) ){

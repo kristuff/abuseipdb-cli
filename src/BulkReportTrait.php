@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -37,7 +37,7 @@ trait BulkReportTrait
      * 
      * @return void
      */
-    protected static function printBulkReportDetail(string $fileName)
+    protected static function printBulkReportDetail(string $fileName): void
     {
         Console::log(
             Console::text('   Bulk report for file: [', 'white') .
@@ -56,7 +56,7 @@ trait BulkReportTrait
      * 
      * @return void
      */
-    protected static function printBulkReportSavedReports(object $response)
+    protected static function printBulkReportSavedReports(object $response): void
     {
         $nbSavedReports = isset($response->data->savedReports) ? $response->data->savedReports : 0;
         $savedColor = $nbSavedReports > 0 ? 'green' : 'red';
@@ -64,7 +64,7 @@ trait BulkReportTrait
         Console::log(Console::text('   ' . $savedIcon, $savedColor) . self::printResult(' Saved reports:    ', $nbSavedReports, $savedColor, '', false));
     }
 
-     /**
+    /**
      * Print report errors
      * 
      * @access protected
@@ -74,7 +74,7 @@ trait BulkReportTrait
      * 
      * @return void
      */
-    protected static function printBulkReportErrors(object $response)
+    protected static function printBulkReportErrors(object $response): void
     {
         $nbErrorReports = isset($response->data->invalidReports) ? count($response->data->invalidReports) : 0;
         $errorColor = $nbErrorReports > 0 ? 'red' : 'green';

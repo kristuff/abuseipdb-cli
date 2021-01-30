@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1); 
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -44,7 +44,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    public static function start(array $arguments, string $keyPath)
+    public static function start(array $arguments, string $keyPath): void
     {
         // required at least one valid argument
         self::$keyPath = $keyPath; 
@@ -65,7 +65,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return bool
      */
-    protected static function registerApiKey($arguments)
+    protected static function registerApiKey($arguments): void
     {
         self::printTitle(Console::text('  ► Register API key ', 'darkgray'));
         
@@ -98,7 +98,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function printHelp()
+    protected static function printHelp(): void
     {
         self::printBanner();
 
@@ -109,33 +109,49 @@ class AbuseIPDBClient extends AbstractClient
                            Console::text('DAYS', 'yellow') . 
                            Console::text('] [-v] [-l ') . 
                            Console::text('LIMIT', 'yellow') . 
+                           Console::text('] [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
                            Console::text(']')); 
 
         Console::log(' ' . Console::text('    abuseipdb -K ') . 
                            Console::text('NETWORK', 'yellow') . 
                            Console::text(' [-d ') . 
                            Console::text('DAYS', 'yellow') . 
+                           Console::text('] [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
                            Console::text(']')); 
 
-        Console::log(' ' . Console::text('    abuseipdb -R ' .
+        Console::log(' ' . Console::text('    abuseipdb -R ') .
                            Console::text('IP', 'yellow') . ' -c ' .
                            Console::text('CATEGORIES', 'yellow') . ' -m ' .
-                           Console::text('MESSAGE', 'yellow'))); 
+                           Console::text('MESSAGE', 'yellow') .
+                           Console::text(' [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
+                           Console::text(']')); 
 
-        Console::log(' ' . Console::text('    abuseipdb -V ' .
-                           Console::text('FILE', 'yellow')));
+        Console::log(' ' . Console::text('    abuseipdb -V ') .
+                           Console::text('FILE', 'yellow') .
+                           Console::text(' [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
+                           Console::text(']')); 
 
-        Console::log(' ' . Console::text('    abuseipdb -E ' .
-                           Console::text('IP', 'yellow')));
+        Console::log(' ' . Console::text('    abuseipdb -E ') .
+                           Console::text('IP', 'yellow').
+                           Console::text(' [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
+                           Console::text(']')); 
                            
         Console::log(' ' . Console::text('    abuseipdb -B ') . 
                            Console::text('[-l ') . 
                            Console::text('LIMIT', 'yellow') . 
                            Console::text('] [-s ') . 
                            Console::text('SCORE', 'yellow') . 
-                           Console::text('] [-p ') . 
-                           Console::text('', 'yellow') . 
+                           Console::text('] [-o ') . 
+                           Console::text('FORMAT', 'yellow') . 
                            Console::text(']')); 
+
+        Console::log(' ' . Console::text('    abuseipdb -S ' .
+                           Console::text('KEY', 'yellow')));
 
         Console::log(' ' . Console::text('    abuseipdb -L | -G | -h | --version'));
                            
@@ -151,31 +167,31 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(Console::text('   -L, --list', 'white')); 
         Console::log('       Prints the list report categories. If given, all next arguments are ignored.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -C, --check ', 'white') . Console::text('ip', 'yellow', 'underline')); 
+        Console::log(Console::text('   -C, --check ', 'white') . Console::text('IP', 'yellow', 'underline')); 
         Console::log('       Performs a check request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -K, --check-block ', 'white') . Console::text('network', 'yellow', 'underline')); 
         Console::log('       Performs a check-block request for the given network. A valid subnet (v4 or v6) denoted with ', 'lightgray');
         Console::log('       CIDR notation is required.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -d, --days ', 'white') . Console::text('days', 'yellow', 'underline')); 
+        Console::log(Console::text('   -d, --days ', 'white') . Console::text('DAYS', 'yellow', 'underline')); 
         Console::log('       For a check or check-block request, defines the maxAgeDays. Min is 1, max is 365, default is 30.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -R, --report ', 'white') . Console::text('ip', 'yellow', 'underline')); 
+        Console::log(Console::text('   -R, --report ', 'white') . Console::text('IP', 'yellow', 'underline')); 
         Console::log('       Performs a report request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -V, --bulk-report ', 'white') . Console::text('path', 'yellow', 'underline')); 
+        Console::log(Console::text('   -V, --bulk-report ', 'white') . Console::text('FILE', 'yellow', 'underline')); 
         Console::log('       Performs a bulk-report request sending a csv file. A valid file name or full path is required.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -E, --clear ', 'white')); 
         Console::log('       Remove own reports for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
         Console::log();
-        Console::log(Console::text('   -c, --categories ', 'white') . Console::text('categories', 'yellow', 'underline')); 
+        Console::log(Console::text('   -c, --categories ', 'white') . Console::text('CATEGORIES', 'yellow', 'underline')); 
         Console::log('       For a report request, defines the report category(ies). Categories must be separate by a comma.', 'lightgray');
         Console::log('       Some categories cannot be used alone. A category can be represented by its shortname or by its', 'lightgray');
         Console::log(Console::text('       id. Use ','lightgray')  . Console::text('abuseipdb -L', 'white') . Console::text(' to print the categories list.','lightgray'));
         Console::log();    
-        Console::log(Console::text('   -m, --message ', 'white') . Console::text('message', 'yellow', 'underline')); 
+        Console::log(Console::text('   -m, --message ', 'white') . Console::text('MESSAGE', 'yellow', 'underline')); 
         Console::log('       For a report request, defines the message to send with report. Message is required for all', 'lightgray');
         Console::log('       report requests.', 'lightgray');
         Console::log();
@@ -183,13 +199,16 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       Performs a blacklist request. Default limit is 1000. This limit can ne changed with the', 'lightgray');
         Console::log('       ' . Console::text('--limit', 'white') . Console::text(' parameter. ', 'lightgray'));
         Console::log();    
-        Console::log(Console::text('   -l, --limit ', 'white') . Console::text('limit', 'yellow', 'underline')); 
+        Console::log(Console::text('   -l, --limit ', 'white') . Console::text('LIMIT', 'yellow', 'underline')); 
         Console::log('       For a blacklist request, defines the limit.', 'lightgray');
         Console::log('       For a check request with verbose flag, sets the max number of last reports displayed. Default is 10', 'lightgray');
         Console::log('       For a check-block request, sets the max number of IPs displayed. Default is 0 (no limit).', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -p, --plaintext ', 'white')); 
-        Console::log('       For a blacklist request, output only ip list as plain text.', 'lightgray');
+        Console::log(Console::text('   -o, --output ', 'white') . Console::text('FORMAT', 'yellow', 'underline')); 
+        Console::log('       Defines the output format for API requests. Default is a colorized report, possible formats are', 'lightgray');
+        Console::log('       '. Console::text('json', 'yellow', 'underline') . ' or ' . Console::text('plaintext', 'yellow', 'underline') . '. Plaintext option prints partial response (blacklist: IPs list, ');
+        Console::log('       check or report: confidence score only, check-block: reported IPs list with confidence score, ', 'lightgray');
+        Console::log('       bulk-report: number of saved reports, clear: number of deleted reports).', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -s, --score ', 'white')); 
         Console::log('       For a blacklist request, sets the confidence score minimum. The confidence minimum ', 'lightgray');
@@ -203,6 +222,9 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(Console::text('   --version', 'white')); 
         Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
         Console::log(); 
+        Console::log(Console::text('   -S, --save-key ', 'white') . Console::text('KEY', 'yellow', 'underline')); 
+        Console::log('       Save the given API key in the configuration file. Required writing permissions on the config directory. ', 'lightgray');
+        Console::log(); 
     }
 
     /**
@@ -213,7 +235,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function printConfig()
+    protected static function printConfig(): void
     {
         $conf = self::$api->getConfig();
 
@@ -238,7 +260,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function printCategories()
+    protected static function printCategories(): void
     {
         self::printTitle(Console::text('  ► Report categories list ', 'darkgray'));
 
@@ -284,7 +306,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function reportIP(array $arguments)
+    protected static function reportIP(array $arguments): void
     {
         $ip      = self::getArgumentValue($arguments,'R', 'report');
         $cats    = self::getArgumentValue($arguments,'c', 'categories');
@@ -317,16 +339,16 @@ class AbuseIPDBClient extends AbstractClient
        
             case self::OUTPUT_DEFAULT:  
                 Console::log(
-                    Console::text('   ✓', 'green') . Console::text(' IP: [', 'white') .
-                    Console::text($ip, $scoreColor) . Console::text('] successfully reported', 'white')
+                    Console::text('   ✓', 'green').Console::text(' IP: [', 'white') .
+                    Console::text($ip, $scoreColor).Console::text('] successfully reported', 'white')
                 );
-                Console::log(Console::text('     Confidence score: ', 'white') . self::getScoreBadge($score));
+                Console::log(Console::text('     Confidence score: ', 'white').self::getScoreBadge($score));
                 Console::log();
                 self::printFooter($time);
                 break;
 
             case self::OUTPUT_PLAINTEXT:
-                echo $score . PHP_EOL;
+                echo $score.PHP_EOL;
                 break;
 
         }
@@ -341,7 +363,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function bulkReport(array $arguments)
+    protected static function bulkReport(array $arguments): void
     {
         $fileName = self::getArgumentValue($arguments,'V', 'bulk-report');
 
@@ -392,7 +414,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function clearIP(array $arguments)
+    protected static function clearIP(array $arguments): void
     {
         $ip = self::getArgumentValue($arguments,'E', 'clear');
         self::printTitle(Console::text('  ► Clear reports for IP: ', 'darkgray') . Console::text(escapeshellcmd($ip), 'white'));
@@ -445,7 +467,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function getBlacklist(array $arguments)
+    protected static function getBlacklist(array $arguments): void
     {
         self::printTitle(Console::text('  ► Get Blacklist ', 'darkgray'));
 
@@ -513,7 +535,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function checkBlock(array $arguments)
+    protected static function checkBlock(array $arguments): void
     {
         $network  = self::getArgumentValue($arguments,'K', 'check-block');
 
@@ -575,7 +597,7 @@ class AbuseIPDBClient extends AbstractClient
      * 
      * @return void
      */
-    protected static function checkIP(array $arguments)
+    protected static function checkIP(array $arguments): void
     {
         $ip = self::getArgumentValue($arguments,'C', 'check');
         

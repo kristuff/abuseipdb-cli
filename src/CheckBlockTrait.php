@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -22,13 +22,12 @@ namespace Kristuff\AbuseIPDB;
 use Kristuff\Mishell\Console;
 
 /**
- * Trait Check
- * 
+ * Trait CheckBlock
  */
 trait CheckBlockTrait
 {
     /**
-     * Print reported IP 
+     * Prints IP detail 
      * 
      * @access protected
      * @static
@@ -36,7 +35,7 @@ trait CheckBlockTrait
      * 
      * @return void
      */
-    protected static function printCheckBlockDetail(object $response)
+    protected static function printCheckBlockDetail(object $response): void
     {
         self::printResult(Console::pad('   Network Address:', 23), $response->data->networkAddress, 'lightyellow');
         self::printResult(Console::pad('   Netmask:', 23), $response->data->netmask, 'lightyellow');
@@ -47,7 +46,7 @@ trait CheckBlockTrait
     }   
     
     /**
-     * Print reported IP 
+     * Prints reported IP 
      * 
      * @access protected
      * @static
@@ -57,7 +56,7 @@ trait CheckBlockTrait
      * 
      * @return void
      */
-    protected static function printCheckBlockReportedIP(object $response, int $maxAge, int $limit)
+    protected static function printCheckBlockReportedIP(object $response, int $maxAge, int $limit): void
     {
         $nbReports = isset($response->data->reportedAddress) ? count($response->data->reportedAddress) : 0;
         

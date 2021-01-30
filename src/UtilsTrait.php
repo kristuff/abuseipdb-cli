@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -33,7 +33,7 @@ trait UtilsTrait
      * 
      * @return string   Formated time
      */
-    protected static function getDate($date)
+    protected static function getDate($date): string
     {
         //2020-05-22T17:06:35+00:00
         return \DateTime::createFromFormat('Y-m-d\TH:i:s+', $date)->format('Y-m-d H:i:s');
@@ -52,7 +52,7 @@ trait UtilsTrait
      * @return string   
      * 
      */    
-    protected static function getScoreColor($score)
+    protected static function getScoreColor($score): string
     {
         $score = intval($score);
         return $score > 50 ? 'lightred' : ($score > 0 ? 'yellow' : 'green') ;
@@ -71,7 +71,7 @@ trait UtilsTrait
      * @return string   
      * 
      */
-    protected static function getArgumentValue(array $arguments, string $shortArg, string $longArg)
+    protected static function getArgumentValue(array $arguments, string $shortArg, string $longArg): string
     {
         return (array_key_exists($shortArg, $arguments) ? $arguments[$shortArg] : 
                (array_key_exists($longArg, $arguments) ? $arguments[$longArg]  : ''));
@@ -88,7 +88,7 @@ trait UtilsTrait
      * 
      * @return bool     True if the short or long argument exist in the arguments array, otherwise false
      */
-    protected static function inArguments(array $arguments, string $shortArg, string $longArg)
+    protected static function inArguments(array $arguments, string $shortArg, string $longArg): bool
     {
           return array_key_exists($shortArg, $arguments) || array_key_exists($longArg, $arguments);
     }
@@ -105,7 +105,7 @@ trait UtilsTrait
      * @throws \Exception
      * @throws \LogicException
      */
-    protected static function loadJsonFile(string $filePath, bool $throwError = true)
+    protected static function loadJsonFile(string $filePath, bool $throwError = true): ?object
     {
         // check file exists
         if (!file_exists($filePath) || !is_file($filePath)){

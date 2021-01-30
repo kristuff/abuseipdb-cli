@@ -2,6 +2,7 @@
 > A CLI tool to check/report IP addresses with the AbuseIPDB API V2
 
 [![Build Status](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/badges/quality-score.png?b=dev)](https://scrutinizer-ci.com/g/kristuff/abuseipdb-cli/?branch=master
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
@@ -16,8 +17,8 @@ Features
 - Bulk report request (send `csv` file) **✓** 
 - Clear IP address request (remove your own reports) **✓**
 - Auto cleaning report comments from sensitive data (email, custom ip/domain names list)  **✓** 
+- Output: colored reports, JSON or plaintext **✓** 
 - Easy Fail2ban integration **✓** 
-- Colored reports **✓** 
 
 Requirements
 ------------

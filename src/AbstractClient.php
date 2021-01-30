@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -87,7 +87,7 @@ abstract class AbstractClient extends ShellErrorHandler
      * 
      * @return bool     true is the command has been found, otherwise false
      */
-    protected static function parseCommand(array $arguments, string $keyPath)
+    protected static function parseCommand(array $arguments, string $keyPath): bool
     {
         foreach(self::$basicCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
@@ -113,10 +113,10 @@ abstract class AbstractClient extends ShellErrorHandler
      * @static
      * @param array         $arguments      The list of arguments     
      * 
-     * @return string   
+     * @return void   
      * 
      */
-    protected static function setOutputFormat(array $arguments)
+    protected static function setOutputFormat(array $arguments): void
     {
         $given = self::getArgumentValue($arguments, 'o', 'output') ?? 'default';
         $output = empty($given) ? 'default' : $given; 
@@ -135,7 +135,7 @@ abstract class AbstractClient extends ShellErrorHandler
      * @throws \InvalidArgumentException                        If the given file does not exist
      * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
      */
-    protected static function createHandler(string $keyPath)
+    protected static function createHandler(string $keyPath): void
     {
         self::$keyPath = $keyPath; 
         self::validate(self::checkForInstall(), 'Key file missing.');
@@ -156,7 +156,7 @@ abstract class AbstractClient extends ShellErrorHandler
      * 
      * @return bool
      */
-    protected static function checkForInstall()
+    protected static function checkForInstall(): bool
     {
         return file_exists(self::$keyPath);
     }
@@ -172,7 +172,7 @@ abstract class AbstractClient extends ShellErrorHandler
      * @throws \InvalidArgumentException                        If the given file does not exist
      * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
      */
-    public static function fromConfigFile(string $configPath)
+    public static function fromConfigFile(string $configPath): QuietApiHandler
     {
         // check file exists
         if (!file_exists($configPath) || !is_file($configPath)){

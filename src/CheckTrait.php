@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -20,7 +20,6 @@
 namespace Kristuff\AbuseIPDB;
 
 use Kristuff\Mishell\Console;
-use Kristuff\Mishell\Program;
 use Kristuff\AbuseIPDB\ApiHandler;
 
 /**
@@ -38,7 +37,7 @@ trait CheckTrait
      * 
      * @return void
      */
-    protected static function printCheckScore(object $response)
+    protected static function printCheckScore(object $response): void
     {
         $score = empty($response->data->abuseConfidenceScore) ? 0 : $response->data->abuseConfidenceScore;
         $line = Console::text(Console::pad('   Confidence score:', 23), 'white') . self::getScoreBadge($score);
@@ -55,7 +54,7 @@ trait CheckTrait
      * 
      * @return void
      */
-    protected static function printCheckDetail(object $response, string $color)
+    protected static function printCheckDetail(object $response, string $color): void
     {
         //      self::printResult('   isPublic', $response->data->isPublic, $defaultColor);
         //      self::printResult('   ipVersion', $response->data->ipVersion, $defaultColor);
@@ -97,7 +96,7 @@ trait CheckTrait
      * 
      * @return void
      */
-    protected static function printCheckReports(object $response, int $maxAge, string $color)
+    protected static function printCheckReports(object $response, int $maxAge, string $color): void
     {
         $nbReport = $response->data->totalReports && is_numeric($response->data->totalReports) ? intval($response->data->totalReports) : 0;
         
@@ -129,7 +128,7 @@ trait CheckTrait
      * 
      * @return void
      */
-    protected static function printCheckLastReports(object $response, int $maxReportsNumber)
+    protected static function printCheckLastReports(object $response, int $maxReportsNumber): void
     {
         $nbLastReports = isset($response->data->reports) ? count($response->data->reports) : 0;
             
@@ -158,13 +157,13 @@ trait CheckTrait
     /**
      * Print single entry in last reports 
      * 
-     * @access protected
+     * @access private
      * @static
      * @param object    $report
      * 
-     * @return array
+     * @return void
      */
-    private static function printLastReport(object $report)
+    private static function printLastReport(object $report): void
     {
         $categories = self::getLastReportsCategories($report);
         $defaultColor = 'lightyellow'; // reset color for last reports
@@ -183,20 +182,18 @@ trait CheckTrait
             $line .= Console::text($key==0 ? '' : ',' , 'white') . Console::text($cat, $defaultColor);
         }
         Console::log($line);
-
-       
     }  
 
     /**
      * Get last report categories array 
      * 
-     * @access protected
+     * @access private
      * @static
      * @param object    $report
      * 
      * @return array
      */
-    private static function getLastReportsCategories(object $report)
+    private static function getLastReportsCategories(object $report): array
     {
         $categories = [];
         foreach (array_filter($report->categories) as $catId){

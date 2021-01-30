@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  *     _    _                    ___ ____  ____  ____
@@ -34,8 +34,19 @@ abstract class ShellUtils
      */
     use UtilsTrait;
   
+    /**
+     * @var string      
+     */
     const OUTPUT_JSON       = 'json';
+
+    /**
+     * @var string      
+     */
     const OUTPUT_DEFAULT    = 'default';
+
+    /**
+     * @var string      
+     */
     const OUTPUT_PLAINTEXT  = 'plaintext';
     
     /**
@@ -44,9 +55,9 @@ abstract class ShellUtils
     protected static $outputFormat = self::OUTPUT_DEFAULT; 
 
     /**
-     * 
+     * Gets whether current output is default 
      */
-    protected static function isDefaultOuput()
+    protected static function isDefaultOuput(): bool
     {
         return self::$outputFormat === self::OUTPUT_DEFAULT; 
     }
@@ -60,7 +71,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printTitle(string $title)
+    protected static function printTitle(string $title): void
     {
         if (self::isDefaultOuput()) {
             Console::log();
@@ -78,7 +89,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printTempMessage()
+    protected static function printTempMessage(): void
     {
         if (self::isDefaultOuput()) {
             Console::reLog(Console::text('   ? ', 'green') . Console::text('waiting for api response', 'white') . Console::text(' ... ', 'green'));
@@ -94,7 +105,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function clearTempMessage()
+    protected static function clearTempMessage(): void
     {
         if (self::isDefaultOuput()) {
             // long blank string to overwrite previous message
@@ -111,7 +122,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printLogo()
+    protected static function printLogo(): void
     {
         if (self::isDefaultOuput()) {
             //Console::log("   _       _    _         __  __                   ", "darkgray");
@@ -134,7 +145,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printVersion()
+    protected static function printVersion(): void
     {
         self::printLogo();
 
@@ -161,13 +172,12 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printBanner()
+    protected static function printBanner(): void
     {
         if (self::isDefaultOuput()) {
             Console::log();    
-            Console::log( Console::text(' Kristuff\AbuseIPDB ', 'darkgray') . Console::text(' ' . AbuseIPDBClient::VERSION . ' ', 'white', 'blue')); 
-            Console::log(Console::text(' Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France', 'darkgray')); 
-            Console::log(' © 2020-2021 Kristuff', 'darkgray'); 
+            Console::log( Console::text(' Kristuff/AbuseIPDB-client ', 'darkgray') . Console::text(' ' . AbuseIPDBClient::VERSION . ' ', 'white', 'blue')); 
+            Console::log(Console::text(' Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France | © 2020-2021 Kristuff', 'darkgray')); 
             Console::log();  
         }  
     }
@@ -180,7 +190,7 @@ abstract class ShellUtils
      * 
      * @return void
      */
-    protected static function printFooter(string $requestTime = '')
+    protected static function printFooter($requestTime = ''): void
     {
         if (self::isDefaultOuput()) {
             if (!empty($requestTime)){
@@ -210,9 +220,8 @@ abstract class ShellUtils
      * 
      * @return string
      */
-    protected static function printResult($text, $value, string $foregroundColor = 'lightred', string $backgroundColor = '', bool $print = true)
+    protected static function printResult($text, $value, string $foregroundColor = 'lightred', string $backgroundColor = '', bool $print = true): string
     {
-        
         // do not print null/blank values
         if (isset($value)){
             $line = Console::text($text, 'white') . Console::text($value, $foregroundColor, $backgroundColor); 
@@ -235,7 +244,7 @@ abstract class ShellUtils
      * 
      * @return string
      */
-    protected static function getScoreBadge(int $score, string $padding = ' ')
+    protected static function getScoreBadge(int $score, string $padding = ' '): string
     {
         $scoreforegroundColor = 'white';
         $scoreBackgroundColor = 'green';
