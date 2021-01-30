@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": ">=7.1",
-        "kristuff/mishell": "^1.4-stable",
-        "kristuff/abuseipdb": "0.9.9"
+        "kristuff/mishell": "^1.5-stable",
+        "kristuff/abuseipdb": "0.9.10"
     },
     "bin": [
         "bin/abuseipdb"
