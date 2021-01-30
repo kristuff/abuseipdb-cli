@@ -39,7 +39,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    protected static function hasErrors(object $response, bool $checkForEmpty = true): bool
+    protected static function hasErrors(?object $response = null, bool $checkForEmpty = true): bool
     {
         return $checkForEmpty ? self::parseErrors($response) || self::checkForEmpty($response) : self::parseErrors($response);
     }
@@ -54,7 +54,7 @@ abstract class ShellErrorHandler extends ShellUtils
      * 
      * @return bool     
      */
-    private static function parseErrors(object $response): bool
+    private static function parseErrors(?object $response = null): bool
     {
         if (isset($response) && isset($response->errors)){
             switch (self::$outputFormat){

@@ -223,7 +223,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
         Console::log(); 
         Console::log(Console::text('   -S, --save-key ', 'white') . Console::text('KEY', 'yellow', 'underline')); 
-        Console::log('       Save the given API key in the configuration file. Required writing permissions on the config directory. ', 'lightgray');
+        Console::log('       Save the given API key in the configuration file. Requires writing permissions on the config directory. ', 'lightgray');
         Console::log(); 
     }
 
@@ -471,7 +471,7 @@ class AbuseIPDBClient extends AbstractClient
     {
         self::printTitle(Console::text('  ► Get Blacklist ', 'darkgray'));
 
-        $plainText  = self::$outputFormat === self::OUTPUT_PLAINTEXT; 
+        $plainText  = (self::$outputFormat === self::OUTPUT_PLAINTEXT); 
         $limit      = self::getNumericParameter($arguments,'l', 'limit', 1000);
         $scoreMin   = self::getNumericParameter($arguments,'s', 'score', 100);
         
@@ -495,7 +495,7 @@ class AbuseIPDBClient extends AbstractClient
         // ✓ Done: print deleted report number 
         switch (self::$outputFormat){
             case self::OUTPUT_JSON:
-                echo json_encode($response, JSON_PRETTY_PRINT);
+                echo json_encode($decodedResponse, JSON_PRETTY_PRINT);
                 break;
        
             case self::OUTPUT_DEFAULT:  
