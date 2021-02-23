@@ -13,7 +13,7 @@
     "require": {
         "php": ">=7.1",
         "kristuff/mishell": "^1.5-stable",
-        "kristuff/abuseipdb": "0.9.10"
+        "kristuff/abuseipdb": "0.9.11"
     },
     "bin": [
         "bin/abuseipdb"

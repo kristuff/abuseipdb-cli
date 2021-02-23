@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.11
+ * @version    0.9.12
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -159,13 +159,13 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(' ' . Console::text('OPTIONS:', 'white', 'underline')); 
         Console::log();
         Console::log(Console::text('   -h, --help', 'white')); 
-        Console::log('       Prints the current help. If given, all next arguments are ignored.', 'lightgray');
+        Console::log('       Prints the current help.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -G, --config', 'white')); 
-        Console::log('       Prints the current config. If given, all next arguments are ignored.', 'lightgray');
+        Console::log('       Prints the current config.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -L, --list', 'white')); 
-        Console::log('       Prints the list report categories. If given, all next arguments are ignored.', 'lightgray');
+        Console::log('       Prints the list report categories.', 'lightgray');
         Console::log();    
         Console::log(Console::text('   -C, --check ', 'white') . Console::text('IP', 'yellow', 'underline')); 
         Console::log('       Performs a check request for the given IP address. A valid IPv4 or IPv6 address is required.', 'lightgray');
@@ -210,7 +210,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       check or report: confidence score only, check-block: reported IPs list with confidence score, ', 'lightgray');
         Console::log('       bulk-report: number of saved reports, clear: number of deleted reports).', 'lightgray');
         Console::log();    
-        Console::log(Console::text('   -s, --score ', 'white')); 
+        Console::log(Console::text('   -s, --score ', 'white'). Console::text('SCORE', 'yellow', 'underline')); 
         Console::log('       For a blacklist request, sets the confidence score minimum. The confidence minimum ', 'lightgray');
         Console::log('       must be between 25 and 100. This parameter is subscriber feature (not honored otherwise, allways 100).', 'lightgray');
         Console::log();    
@@ -220,7 +220,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       ' . Console::text('--limit', 'white') . Console::text(' parameter. ', 'lightgray'));
         Console::log();    
         Console::log(Console::text('   --version', 'white')); 
-        Console::log('       Prints the current version. If given, all next arguments are ignored.', 'lightgray');
+        Console::log('       Prints the current version.', 'lightgray');
         Console::log(); 
         Console::log(Console::text('   -S, --save-key ', 'white') . Console::text('KEY', 'yellow', 'underline')); 
         Console::log('       Save the given API key in the configuration file. Requires writing permissions on the config directory. ', 'lightgray');

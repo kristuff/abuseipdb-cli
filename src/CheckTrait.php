@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.11
+ * @version    0.9.12
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -56,8 +56,8 @@ trait CheckTrait
      */
     protected static function printCheckDetail(object $response, string $color): void
     {
-        //      self::printResult('   isPublic', $response->data->isPublic, $defaultColor);
-        //      self::printResult('   ipVersion', $response->data->ipVersion, $defaultColor);
+        //  self::printResult('   isPublic', $response->data->isPublic, $defaultColor);
+        //  self::printResult('   ipVersion', $response->data->ipVersion, $defaultColor);
  
         $line = self::printResult(Console::pad('   Whitelisted:', 23), $response->data->isWhitelisted ? 'true': 'false', $color, '', false);
         $line .= $response->data->isWhitelisted ? Console::text(' ★', 'green') : ''; 
@@ -197,7 +197,7 @@ trait CheckTrait
     {
         $categories = [];
         foreach (array_filter($report->categories) as $catId){
-            $cat = ApiHandler::getCategoryNamebyId($catId)[0];
+            $cat = ApiHandler::getCategoryNameById(strval($catId));
             if ($cat !== false) {
                 $categories[] = $cat;
             }
