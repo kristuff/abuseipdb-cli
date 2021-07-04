@@ -7,13 +7,15 @@
     "authors": [
         {
             "name": "Kristuff",
-            "homepage": "https://github.com/kristuff"
+            "homepage": "https://github.com/kristuff",
+            "email": "kristuff@kristuff.fr",
+            "role": "Developer"
         }
     ],
     "require": {
         "php": ">=7.1",
         "kristuff/mishell": "^1.5-stable",
-        "kristuff/abuseipdb": "0.9.11"
+        "kristuff/abuseipdb": "^0.9.12-stable"
     },
     "bin": [
         "bin/abuseipdb"
