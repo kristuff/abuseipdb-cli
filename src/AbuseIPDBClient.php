@@ -1,12 +1,11 @@
 <?php declare(strict_types=1); 
 
 /**
- *     _    _                    ___ ____  ____  ____
- *    / \  | |__  _   _ ___  ___|_ _|  _ \|  _ \| __ )
- *   / _ \ | '_ \| | | / __|/ _ \| || |_) | | | |  _ \
- *  / ___ \| |_) | |_| \__ \  __/| ||  __/| |_| | |_) |
- * /_/   \_\_.__/ \__,_|___/\___|___|_|   |____/|____/
- *
+ *       _                 ___ ___ ___  ___
+ *  __ _| |__ _  _ ___ ___|_ _| _ \   \| _ )
+ * / _` | '_ \ || (_-</ -_)| ||  _/ |) | _ \
+ * \__,_|_.__/\_,_/__/\___|___|_| |___/|___/
+ * 
  * This file is part of Kristuff\AbuseIPDB.
  *
  * (c) Kristuff <kristuff@kristuff.fr>
@@ -14,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.13
+ * @version    0.9.14
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -78,8 +77,8 @@ class AbuseIPDBClient extends AbstractClient
         }
 
         $data = json_encode(['api_key' => $key]);
-       
-        if (file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
+        
+        if (@file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
             self::error('An error occurred when writing config file. Make sure to give the appropriate permissions to the config directory.');
             self::printFooter();
             Program::exit(1);
