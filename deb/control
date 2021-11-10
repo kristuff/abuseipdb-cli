@@ -1,0 +1,8 @@
+Package: abuseipdb-client
+Version: 0.9.14
+Maintainer: kristuff <kristuff@kristuff.fr>
+Architecture: all
+Depends: php, php-curl
+Description: CLI tool to check, report IP address, download blacklists with AbuseIPDB API v2
+Priority: optional
+Section: utils
