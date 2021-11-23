@@ -1,0 +1,113 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "42c454b4daa1ae6cea621e49a81423fe",
+    "packages": [
+        {
+            "name": "kristuff/abuseipdb",
+            "version": "v0.9.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kristuff/abuseipdb.git",
+                "reference": "3ab67950a1e7ee1e9b23f9afc45a1f553a79b3c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kristuff/abuseipdb/zipball/3ab67950a1e7ee1e9b23f9afc45a1f553a79b3c8",
+                "reference": "3ab67950a1e7ee1e9b23f9afc45a1f553a79b3c8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kristuff\\AbuseIPDB\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kristuff",
+                    "email": "kristuff@kristuff.fr",
+                    "homepage": "https://github.com/kristuff",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP wrapper for AbuseIPDB API v2",
+            "keywords": [
+                "abuseipdb",
+                "api"
+            ],
+            "support": {
+                "issues": "https://github.com/kristuff/abuseipdb/issues",
+                "source": "https://github.com/kristuff/abuseipdb/tree/v0.9.13"
+            },
+            "time": "2021-09-18T19:42:24+00:00"
+        },
+        {
+            "name": "kristuff/mishell",
+            "version": "v1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kristuff/mishell.git",
+                "reference": "7c23c174532a9f543ab348528c99c48f09277b62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kristuff/mishell/zipball/7c23c174532a9f543ab348528c99c48f09277b62",
+                "reference": "7c23c174532a9f543ab348528c99c48f09277b62",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kristuff\\Mishell\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kristuff",
+                    "homepage": "https://github.com/kristuff"
+                }
+            ],
+            "description": "A mini PHP library to build beautiful CLI apps and reports",
+            "homepage": "https://kristuff.fr/projects/mishell",
+            "keywords": [
+                "cli",
+                "color",
+                "table"
+            ],
+            "support": {
+                "issues": "https://github.com/kristuff/mishell/issues",
+                "source": "https://github.com/kristuff/mishell/tree/v1.5"
+            },
+            "time": "2021-01-28T19:01:18+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.1"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

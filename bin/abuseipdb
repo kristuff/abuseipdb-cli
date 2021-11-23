@@ -14,54 +14,48 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.14
+ * @version    0.9.15
  * @copyright  2020-2021 Kristuff
  */
 
 use Kristuff\AbuseIPDB\AbuseIPDBClient;
 
 /**
- * Autoloading (depending on install directory) 
+ * Autoloading and locate config (depending on install directory) 
  * 
- * 1/ Installed with create-project abuseipdb-client
+ * 1/ Project installed with git clone or create-project abuseipdb-cli:
+ *    bin and config folder at same level 
  * 
- *  project
- *    |_ bin
- *       xxx symlink
- *    |_ config
- *    |_ vendor
- *         |_ kristuff
- *               |_  abusedipdb-cli
- *                       |_ bin 
- *                            xxx <- me
- * 
- * 2/ installed with git clone or create-project abuseipdb-cli
- *    bin and config folder as same level 
- * 
- *   project
- *      |_ bin 
+ *   ~/abuseipdb-cli/
+ *      |_ bin/ 
  *           xxx <- me
- *      |_ config
- *      |_ vendor
+ *      |_ config/
+ *      |_ vendor/
+ * 
+ * 2/ In case the .deb package is installed, config folder
+ *    is located in /etc/abuseipdb-client and main library in
+ *    /usr/lib/abuseipdb-client 
+ * 
+ *   /usr/lib/abuseipdb-client/
+ *      |_ bin/ 
+ *           xxx <- me
+ *      |_ vendor/
+ 
+ *   /etc/abuseipdb-client/
+ *      conf...
  * 
 */
 
-//  2/ git clone or create-project abuseipdb-cli
+//  1/ git clone or create-project abuseipdb-cli
 $autoloadPath   = realpath(__DIR__) .'/../vendor/autoload.php';
-$keyPath        = realpath(__DIR__) .'/../config/key.json';
+$configPath     = realpath(__DIR__) .'/../config';
 
-//  test for 1/
-$parentDirectory    = dirname(get_included_files()[0], 2);
-$subParentDirectory = dirname(get_included_files()[0], 3);
-$vendorDirectory    = dirname(get_included_files()[0], 4); // should be vendor
+//  test for 2/
+$globalConfPath = '/etc/abuseipdb-client'; 
+if (file_exists($globalConfPath) && is_dir($globalConfPath)){
+    $configPath = $globalConfPath;
+}
 
-if (pathinfo($parentDirectory, PATHINFO_BASENAME) === 'abuseipdb-cli' && 
-    pathinfo($subParentDirectory, PATHINFO_BASENAME) === 'kristuff' && 
-    pathinfo($vendorDirectory, PATHINFO_BASENAME) === 'vendor') {
-
-    $keyPath       = $vendorDirectory . '/../config/key.json';
-    $autoloadPath  = $vendorDirectory .'/autoload.php';
-};
 
 require_once $autoloadPath;
 
@@ -70,7 +64,7 @@ AbuseIPDBClient::start(
         AbuseIPDBClient::SHORT_ARGUMENTS,
         AbuseIPDBClient::LONG_ARGUMENTS
     ), 
-    $keyPath
+    $configPath
 );
 
 ?>
