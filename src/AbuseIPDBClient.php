@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.14
+ * @version    0.9.15
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -39,54 +39,21 @@ class AbuseIPDBClient extends AbstractClient
      * @access public
      * @static
      * @param array     $arguments
-     * @param string    $keyPath        The key file path
+     * @param string    $keyPath        The configuration path
      * 
      * @return void
      */
-    public static function start(array $arguments, string $keyPath): void
+    public static function start(array $arguments, string $confPath): void
     {
         // required at least one valid argument
-        self::$keyPath = $keyPath; 
         self::validate( !empty($arguments), 'No valid arguments given. Run abuseipdb --help to get help.');
-        if (!self::parseCommand($arguments, $keyPath)) {
+        self::$configPath = $confPath; 
+        if (!self::parseCommand($arguments, $confPath)) {
             self::error('Invalid arguments. Run abuseipdb --help to get help.');
             self::printFooter();
             Program::exit(1);
         }
         Program::exit(0);
-    }
-   
-    /**
-     * Register API key in a config file
-     *  
-     * @access protected
-     * @static
-     * 
-     * @return bool
-     */
-    protected static function registerApiKey($arguments): void
-    {
-        self::printTitle(Console::text('  ► Register API key ', 'darkgray'));
-        
-        $key = self::getArgumentValue($arguments,'S', 'save-key');
-        
-        if (empty($key)){
-            self::error('Null or invalid key argument.');
-            self::printFooter();
-            Program::exit(1);
-        }
-
-        $data = json_encode(['api_key' => $key]);
-        
-        if (@file_put_contents(self::$keyPath, $data, LOCK_EX) === false){
-            self::error('An error occurred when writing config file. Make sure to give the appropriate permissions to the config directory.');
-            self::printFooter();
-            Program::exit(1);
-        }
-        Console::log(Console::text('  ✓ ', 'green') . Console::text('Your config key file has been successfully created.', 'white'));
-        Console::log();   
-        self::printFooter();
-        Program::exit();
     }
  
     /**
@@ -99,8 +66,7 @@ class AbuseIPDBClient extends AbstractClient
      */
     protected static function printHelp(): void
     {
-        self::printBanner();
-
+        Console::log();
         Console::log(' ' . Console::text('SYNOPSIS:', 'white', 'underline')); 
         Console::log(' ' . Console::text('    abuseipdb -C ') . 
                            Console::text('IP', 'yellow') . 
@@ -148,9 +114,6 @@ class AbuseIPDBClient extends AbstractClient
                            Console::text('] [-o ') . 
                            Console::text('FORMAT', 'yellow') . 
                            Console::text(']')); 
-
-        Console::log(' ' . Console::text('    abuseipdb -S ' .
-                           Console::text('KEY', 'yellow')));
 
         Console::log(' ' . Console::text('    abuseipdb -L | -G | -h | --version'));
                            
@@ -221,9 +184,7 @@ class AbuseIPDBClient extends AbstractClient
         Console::log(Console::text('   --version', 'white')); 
         Console::log('       Prints the current version.', 'lightgray');
         Console::log(); 
-        Console::log(Console::text('   -S, --save-key ', 'white') . Console::text('KEY', 'yellow', 'underline')); 
-        Console::log('       Save the given API key in the configuration file. Requires writing permissions on the config directory. ', 'lightgray');
-        Console::log(); 
+        self::printFooter();
     }
 
     /**

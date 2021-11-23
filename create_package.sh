@@ -8,18 +8,16 @@ rm -rf debian
 mkdir -p debian/DEBIAN
 mkdir -p debian/usr/lib/abuseipdb-client
 mkdir -p debian/usr/share/doc/abuseipdb-client
-# it's planned to use text files, instead of json
-# for config and properly place them in /etc 
-# mkdir -p debian/etc/abuseipdb-client
+mkdir -p debian/etc/abuseipdb-client
 
 # populate the debian directory
 cp deb/control           debian/DEBIAN
 cp deb/postinst.sh       debian/DEBIAN/postinst
 cp deb/prerm.sh          debian/DEBIAN/prerm
+cp config/conf.ini       debian/etc/abuseipdb-client
 cp deb/copyright         debian/usr/share/doc/abuseipdb-client
 cp LICENSE               debian/usr/lib/abuseipdb-client
 cp -R bin                debian/usr/lib/abuseipdb-client
-cp -R config             debian/etc/lib/abuseipdb-client
 cp -R src                debian/usr/lib/abuseipdb-client
 cp -R vendor             debian/usr/lib/abuseipdb-client
 

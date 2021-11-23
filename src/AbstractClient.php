@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.14
+ * @version    0.9.15
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -31,17 +31,17 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string      
      */
-    const SHORT_ARGUMENTS = "o:S:GLBK:C:d:R:c:m:l:E:V:hvs:";
+    const SHORT_ARGUMENTS = "o:GLBK:C:d:R:c:m:l:E:V:hvs:";
 
     /**
      * @var string      
      */
-    const LONG_ARGUMENTS = ['output:', 'save-key:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version'];
+    const LONG_ARGUMENTS = ['output:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version'];
     
     /**
      * @var string
      */
-    const VERSION = 'v0.9.14'; 
+    const VERSION = 'v0.9.15'; 
 
     /**
      * @var QuietApiHandler
@@ -51,7 +51,7 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string
      */
-    protected static $keyPath = __DIR__.'/../config/key.json';
+    protected static $configPath = __DIR__.'/../config';
 
     /**
      * @var array
@@ -59,15 +59,14 @@ abstract class AbstractClient extends ShellErrorHandler
     protected static $basicCommands = [
         ['h',           'help',         'printHelp'],
         ['version',     'version',      'printVersion'],    // no short arg
-        ['S',           'save-key',     'registerApiKey'],  
+        ['L',           'list',         'printCategories'],
     ];
     
     /**
      * @var array
      */
     protected static $mainCommands = [
-        ['G',           'config',       'printConfig'],
-        ['L',           'list',         'printCategories'],
+        ['G',           'config',       'printConfig'], // require handler 
         ['C',           'check',        'checkIP'],
         ['K',           'check-block',  'checkBlock'],
         ['R',           'report',       'reportIP'],
@@ -82,21 +81,20 @@ abstract class AbstractClient extends ShellErrorHandler
      * @access public 
      * @static
      * @param array     $arguments   
-     * @param string    $keyPath     The configuration file path
      * 
      * @return bool     true is the command has been found, otherwise false
      */
-    protected static function parseCommand(array $arguments, string $keyPath): bool
+    protected static function parseCommand(array $arguments): bool
     {
         foreach(self::$basicCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
-                call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], $cmd[2]=== 'registerApiKey' ? $arguments : null);
+                call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], null);
                 return true;
             }
         }
         foreach(self::$mainCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
-                self::createHandler($keyPath);
+                self::createHandler();
                 self::setOutputFormat($arguments);                    
                 call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], $arguments);
                 return true;
@@ -124,77 +122,116 @@ abstract class AbstractClient extends ShellErrorHandler
     }
 
     /**
-     * Check for install then create and register ApiHandler
+     * Create and register ApiHandler
      * 
-     * @access public 
+     * @access protected 
      * @static
-     * @param string    $configPath     The configuration file path
      * 
      * @return void
      * @throws \InvalidArgumentException                        If the given file does not exist
      * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
      */
-    protected static function createHandler(string $keyPath): void
+    protected static function createHandler(): void
     {
-        self::$keyPath = $keyPath; 
-        self::validate(self::checkForInstall(), 'Key file missing.');
         try {
-            self::$api = self::fromConfigFile(self::$keyPath);
+            $mainConfPath  = self::$configPath . DIRECTORY_SEPARATOR . 'conf.ini';
+            $localConfPath = self::$configPath . DIRECTORY_SEPARATOR . 'local.ini';
+
+            // Check main file exists and is readable
+            // Even if a local file exists, main file must be here (throws ex otherwise)
+            $mainConfigArray  = self::loadConfigFile($mainConfPath, true);
+            $localConfigArray = self::loadConfigFile($localConfPath);
+
+            $selfIps = self::extractSelfIpsFromConf($mainConfigArray, $localConfigArray);
+            $apiKey  = self::extractApiKeyFromConf($mainConfigArray, $localConfigArray);
+            
+            self::$api =  new QuietApiHandler($apiKey, $selfIps);
         } catch (\Exception $e) {
             self::error($e->getMessage());
             self::printFooter();
             Program::exit(1);
         }
     }
-  
+
     /**
-     * Check for install
+     * Extract self ip list from configuration array
      * 
-     * @access protected
+     * @access protected 
      * @static
+     * @param array    $conf        The main configuration array
+     * @param array    $local       The local configuration array
      * 
-     * @return bool
+     * @return array
      */
-    protected static function checkForInstall(): bool
+    protected static function extractSelfIpsFromConf(array $conf, array $localConf): array
     {
-        return file_exists(self::$keyPath);
+        if (array_key_exists('self_ips', $localConf)){
+            return array_map('trim', explode(',', $localConf['self_ips']));
+        }
+        if (array_key_exists('self_ips', $conf)){
+            return array_map('trim', explode(',', $conf['self_ips']));
+        }
+        return [];
     }
 
     /**
-     * Get a new instance of ApiHandler with config stored in Json files
+     * Extract the api key from configuration array
      * 
-     * @access public 
+     * @access protected 
      * @static
-     * @param string    $configPath     The configuration file path
+     * @param array    $conf        The configuration array
      * 
-     * @return \Kristuff\AbuseIPDB\ApiHandler
-     * @throws \InvalidArgumentException                        If the given file does not exist
-     * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
+     * @return array
      */
-    public static function fromConfigFile(string $configPath): QuietApiHandler
+    protected static function extractApiKeyFromConf(array $conf, $localConf): string
     {
-        // check file exists
-        if (!file_exists($configPath) || !is_file($configPath)){
-            throw new \InvalidArgumentException('The file ['.$configPath.'] does not exist.');
-        }
+        $key = '';
 
-        // check file is readable
-        if (!is_readable($configPath)){
-            throw new InvalidPermissionException('The file ['.$configPath.'] is not readable.');
+        if (array_key_exists('api_key', $localConf)){
+            $key = $localConf['api_key'];
         }
-
-        $keyConfig = self::loadJsonFile($configPath);
-        $selfIps = [];
         
-        // Look for other optional config files in the same directory 
-        $selfIpsConfigPath = pathinfo($configPath, PATHINFO_DIRNAME).DIRECTORY_SEPARATOR.'self_ips.json';
-        if (file_exists($selfIpsConfigPath)){
-            $selfIps = self::loadJsonFile($selfIpsConfigPath)->self_ips;
+        if (empty($key) && array_key_exists('api_key', $conf)){
+            $key = $conf['api_key'];
         }
 
-        $app = new QuietApiHandler($keyConfig->api_key, $selfIps);
-        
-        return $app;
+        if (empty($key)){
+            throw new \RuntimeException('Api key is missing.');
+        }
+
+        return $key;
     }
 
+    /**
+     * Load a config file
+     * 
+     * @access protected 
+     * @static
+     * @param string    $path        The configuration file path
+     * @param bool      $mandatory   If true, throw ex when the file does not exist.
+     * 
+     * @return array
+     * @throws \RuntimeException                                
+     */
+    protected static function loadConfigFile(string $path, bool $mandatory = false): array
+    {
+        if (file_exists($path) && is_file($path)){
+
+            // If main file or a local file is not readable then throws ex.
+            if (!is_readable($path)){
+                throw new \RuntimeException('The configuration file ['.$path.'] is not readable.');
+            }
+
+            $conf = parse_ini_file($path, false);  // load without sections...
+            if ($conf === false){
+                throw new \RuntimeException('Unable to read configuration file ['.$path.'].');
+            }
+            return $conf;
+        }
+
+        if ($mandatory){
+            throw new \RuntimeException('The configuration file ['.$path.'] does not exist.');
+        }
+        return [];
+    }
 }
