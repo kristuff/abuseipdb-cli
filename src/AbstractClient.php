@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.15
+ * @version    0.9.16
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -41,7 +41,7 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string
      */
-    const VERSION = 'v0.9.15'; 
+    const VERSION = 'v0.9.16'; 
 
     /**
      * @var QuietApiHandler
@@ -82,7 +82,7 @@ abstract class AbstractClient extends ShellErrorHandler
      * @static
      * @param array     $arguments   
      * 
-     * @return bool     true is the command has been found, otherwise false
+     * @return bool     true if the command has been found, otherwise false
      */
     protected static function parseCommand(array $arguments): bool
     {
@@ -111,14 +111,13 @@ abstract class AbstractClient extends ShellErrorHandler
      * @param array         $arguments      The list of arguments     
      * 
      * @return void   
-     * 
      */
     protected static function setOutputFormat(array $arguments): void
     {
         $given = self::getArgumentValue($arguments, 'o', 'output') ?? 'default';
         $output = empty($given) ? 'default' : $given; 
         self::validate(in_array($output, ['default', 'json', 'plaintext']), 'Invalid output argument given.');
-        self::$outputFormat = $output ;
+        self::$outputFormat = $output;
     }
 
     /**
@@ -128,8 +127,6 @@ abstract class AbstractClient extends ShellErrorHandler
      * @static
      * 
      * @return void
-     * @throws \InvalidArgumentException                        If the given file does not exist
-     * @throws \Kristuff\AbuseIPDB\InvalidPermissionException   If the given file is not readable 
      */
     protected static function createHandler(): void
     {
@@ -159,16 +156,16 @@ abstract class AbstractClient extends ShellErrorHandler
      * @access protected 
      * @static
      * @param array    $conf        The main configuration array
-     * @param array    $local       The local configuration array
+     * @param array    $localConf   The local configuration array
      * 
      * @return array
      */
     protected static function extractSelfIpsFromConf(array $conf, array $localConf): array
     {
-        if (array_key_exists('self_ips', $localConf)){
+        if (array_key_exists('self_ips', $localConf) && !empty($localConf['self_ips'])){
             return array_map('trim', explode(',', $localConf['self_ips']));
         }
-        if (array_key_exists('self_ips', $conf)){
+        if (array_key_exists('self_ips', $conf) && !empty($conf['self_ips'])){
             return array_map('trim', explode(',', $conf['self_ips']));
         }
         return [];
@@ -179,11 +176,13 @@ abstract class AbstractClient extends ShellErrorHandler
      * 
      * @access protected 
      * @static
-     * @param array    $conf        The configuration array
+     * @param array    $conf        The main configuration array
+     * @param array    $localConf   The local configuration array
      * 
-     * @return array
+     * @return string
+     * @throws \RuntimeException                                
      */
-    protected static function extractApiKeyFromConf(array $conf, $localConf): string
+    protected static function extractApiKeyFromConf(array $conf, array $localConf): string
     {
         $key = '';
 

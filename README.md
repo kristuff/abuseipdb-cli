@@ -6,7 +6,7 @@
 [![Latest Stable Version](https://poser.pugx.org/kristuff/abuseipdb-cli/v/stable)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 [![License](https://poser.pugx.org/kristuff/abuseipdb-cli/license)](https://packagist.org/packages/kristuff/abuseipdb-cli)
 
-[![sample-report](doc/sample-report.gif)](https://kristuff.fr/projects/abuseipdbcli)
+[![sample-report](doc/sample-check.gif)](https://kristuff.fr/projects/abuseipdbcli)
 
 Features
 --------
@@ -25,7 +25,7 @@ Requirements
 - PHP >= 7.1
 - PHP's cURL  
 - A valid [abuseipdb.com](https://abuseipdb.com) account with an API key
-- Composer for install
+- Composer for install (not required if you install the `.deb` package)
 
 Dependencies
 ------------
