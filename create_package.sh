@@ -21,13 +21,15 @@ cp -R bin                debian/usr/lib/abuseipdb-client
 cp -R src                debian/usr/lib/abuseipdb-client
 cp -R vendor             debian/usr/lib/abuseipdb-client
 
-# Packages should't be updated manually, do not deploy composer files.
-#cp composer.json        debian/usr/lib/abuseipdb-client
-#cp composer.lock        debian/usr/lib/abuseipdb-client
+# Packages should't be updated manually, but keep all source code..
+cp composer.json        debian/usr/lib/abuseipdb-client
+cp composer.lock        debian/usr/lib/abuseipdb-client
 
 # adjust ownerships
 chown -R root:root      debian
 chmod -R 0755           debian/usr/lib/abuseipdb-client
+chmod 0755              debian/etc/abuseipdb-client
+chmod 0644              debian/etc/abuseipdb-client/conf.ini
 
 # minimal permissions required for scripts
 chmod 755 debian/DEBIAN/postinst

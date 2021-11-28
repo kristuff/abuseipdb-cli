@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.15
+ * @version    0.9.16
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;

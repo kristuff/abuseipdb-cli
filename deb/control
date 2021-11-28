@@ -1,5 +1,5 @@
 Package: abuseipdb-client
-Version: 0.9.15
+Version: 0.9.16
 Maintainer: kristuff <kristuff@kristuff.fr>
 Architecture: all
 Depends: php, php-curl
