@@ -15,7 +15,7 @@
     "require": {
         "php": ">=7.1",
         "kristuff/mishell": "^1.5-stable",
-        "kristuff/abuseipdb": "^0.9.13-stable"
+        "kristuff/abuseipdb": "^0.9.14-stable"
     },
     "autoload": {
         "psr-4": {

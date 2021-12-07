@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.16
+ * @version    0.9.17
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -31,17 +31,17 @@ abstract class AbstractClient extends ShellErrorHandler
     /**
      * @var string      
      */
-    const SHORT_ARGUMENTS = "o:GLBK:C:d:R:c:m:l:E:V:hvs:";
+    const SHORT_ARGUMENTS = "o:GLBK:C:d:R:c:m:l:E:V:hvs:t:";
 
     /**
      * @var string      
      */
-    const LONG_ARGUMENTS = ['output:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version'];
+    const LONG_ARGUMENTS = ['output:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version', 'timeout:'];
     
     /**
      * @var string
      */
-    const VERSION = 'v0.9.16'; 
+    const VERSION = 'v0.9.17'; 
 
     /**
      * @var QuietApiHandler
@@ -94,7 +94,7 @@ abstract class AbstractClient extends ShellErrorHandler
         }
         foreach(self::$mainCommands as $cmd){
             if (self::inArguments($arguments, $cmd[0], $cmd[1])){
-                self::createHandler();
+                self::createHandler($arguments);
                 self::setOutputFormat($arguments);                    
                 call_user_func(__NAMESPACE__.'\AbuseIPDBClient::'.$cmd[2], $arguments);
                 return true;
@@ -125,10 +125,11 @@ abstract class AbstractClient extends ShellErrorHandler
      * 
      * @access protected 
      * @static
+     * @param array     $arguments   
      * 
      * @return void
      */
-    protected static function createHandler(): void
+    protected static function createHandler(array $arguments): void
     {
         try {
             $mainConfPath  = self::$configPath . DIRECTORY_SEPARATOR . 'conf.ini';
@@ -141,8 +142,18 @@ abstract class AbstractClient extends ShellErrorHandler
 
             $selfIps = self::extractSelfIpsFromConf($mainConfigArray, $localConfigArray);
             $apiKey  = self::extractApiKeyFromConf($mainConfigArray, $localConfigArray);
+            $timeout = self::extractNumericFromConf('timeout',$mainConfigArray, $localConfigArray, 0);
             
-            self::$api =  new QuietApiHandler($apiKey, $selfIps);
+            // look into arguments for possible overwrite for timeout 
+            if (self::inArguments($arguments, 't', 'timeout')){
+                $timeout = self::getArgumentValue($arguments, 't', 'timeout');
+            }
+
+            if (!is_numeric($timeout)){
+                throw new \RuntimeException('Invalid timeout argument, must be numeric.');
+            }            
+
+            self::$api =  new QuietApiHandler($apiKey, $selfIps, intval($timeout));
         } catch (\Exception $e) {
             self::error($e->getMessage());
             self::printFooter();
@@ -199,6 +210,31 @@ abstract class AbstractClient extends ShellErrorHandler
         }
 
         return $key;
+    }
+
+    /**
+     * Extract numeric value from configuration array
+     * 
+     * @access protected 
+     * @static
+     * @param string   $key         The config key 
+     * @param array    $conf        The main configuration array
+     * @param array    $localConf   The local configuration array
+     * @param int      $default     The default value if empty
+     *  
+     * @return int
+     */
+    protected static function extractNumericFromConf(string $key, array $conf, array $localConf, int $default): int
+    {
+        if (array_key_exists($key, $localConf) && is_numeric($localConf[$key])){
+            return intval($localConf[$key]);
+        }
+        
+        if (array_key_exists($key, $conf) && is_numeric($conf[$key])){
+            return intval($conf[$key]);
+        }
+
+        return $default;
     }
 
     /**
