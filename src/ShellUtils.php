@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.16
+ * @version    0.9.17
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -147,7 +147,6 @@ abstract class ShellUtils
         Console::log();
         Console::log(Console::text('  Kristuff/AbuseIPDB Client version: ', 'darkgray') . Console::text(AbuseIPDBClient::VERSION, 'lightgray'));
         Console::log(Console::text('  Kristuff/AbuseIPDB Core version:   ', 'darkgray') . Console::text(ApiHandler::VERSION, 'lightgray')); 
-        Console::log(Console::text('  --------------------------------------------------', 'darkgray'));    
         Console::log(Console::text('  Released under the MIT licence', 'darkgray'));
         Console::log(Console::text('  Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France', 'darkgray'));
         Console::log(
@@ -155,7 +154,7 @@ abstract class ShellUtils
             Console::text('https://github.com/kristuff', 'darkgray', 'underlined').
             Console::text(')', 'darkgray')
         );
-        Console::log(Console::text('  --------------------------------------------------', 'darkgray'));    
+        //Console::log(Console::text('  --------------------------------------------------', 'darkgray'));    
         Console::log();
     }
 

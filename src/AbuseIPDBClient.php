@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.16
+ * @version    0.9.17
  * @copyright  2020-2021 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -176,6 +176,10 @@ class AbuseIPDBClient extends AbstractClient
         Console::log('       For a blacklist request, sets the confidence score minimum. The confidence minimum ', 'lightgray');
         Console::log('       must be between 25 and 100. This parameter is subscriber feature (not honored otherwise, allways 100).', 'lightgray');
         Console::log();    
+        Console::log(Console::text('   -t, --timeout ', 'white'). Console::text('TIMEOUT', 'yellow', 'underline')); 
+        Console::log('       Define the timeout in API request and overwrite the value defined in conf.ini or local.ini.', 'lightgray');
+        Console::log('       Timeout is expressed in milliseconds.', 'lightgray');
+        Console::log();    
         Console::log(Console::text('   -v, --verbose ', 'white')); 
         Console::log('       For a check request, display additional fields like the x last reports. This increases ', 'lightgray');
         Console::log(Console::text('       request time and response size. Max number of last reports displayed can be changed with the ', 'lightgray'));
@@ -202,6 +206,7 @@ class AbuseIPDBClient extends AbstractClient
         self::printTitle(Console::text('  ► Current configuration ', 'darkgray'));
         
         Console::log(Console::text('  api_key:[', 'white') . Console::text($conf['apiKey'], 'green') . Console::text(']', 'white'));
+        Console::log(Console::text('  timeout:[', 'white') . Console::text($conf['timeout'], 'green') . Console::text(']', 'white'));
         Console::log(Console::text('  self_ips:', 'white'));
         
         foreach ($conf['selfIps'] as $ip) {

@@ -1,0 +1,30 @@
+abuseipdb-client (0.9.17) unstable; urgency=low
+
+  * New feature: timeout for all cURL request can be defined in conf.ini
+    or from command line using the -t | --timeout option. Timeout is expressed
+    in milliseconds.
+  * A man page is now available  
+
+ -- kristuff <kristuff@kristuff.fr>  Tue, 07 Dec 2021 19:00:00 +0100
+
+abuseipdb-client (0.9.16) unstable; urgency=low
+
+  * Fix php doc, typo, formatting in source code
+  * Include composer.json and composer.lock in .deb package
+
+ -- kristuff <kristuff@kristuff.fr>  Sun, 28 Nov 2021 19:00:00 +0100
+
+ abuseipdb-client (0.9.15) unstable; urgency=low
+
+  * Break change Configuration is now in INI format and located in a conf.ini file 
+    (with possible override in a local.ini file) instead of json files. 
+  * The save-key command has been removed.
+  * When installing the .deb package, config is now located in /etc/abuseipdb-client/
+
+ -- kristuff <kristuff@kristuff.fr>  Tue, 23 Nov 2021 19:00:00 +0100
+
+ abuseipdb-client (0.9.14) unstable; urgency=low
+
+  * Initial release
+
+ -- kristuff <kristuff@kristuff.fr>  Wed, 10 Nov 2021 19:00:00 +0100
