@@ -1,8 +1,13 @@
 Package: abuseipdb-client
-Version: 0.9.17
+Version: 0.9.17+deb11u1
 Maintainer: kristuff <kristuff@kristuff.fr>
 Architecture: all
-Depends: php, php-curl
+Depends: php-cli, php-curl
 Description: AbuseIPDB APIv2 client: check, report IP address, download blacklist
+ AbuseIPDB.com provides an API to report an IP address associated with 
+ malicious activity, check to see if an IP address has been reported, 
+ or download blacklist or reported IPs. 
+ Kristuff\AbuseIPDB is a PHP project designed to help working with 
+ AbuseIPDB APIv2 from PHP or commande line. 
 Priority: optional
 Section: utils
