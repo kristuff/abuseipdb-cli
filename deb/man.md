@@ -8,14 +8,15 @@ abuseipdb - check, report IP addresses download blacklist with AbuseIPDB API v2.
 
 # SYNOPSIS
 
-abuseipdb COMMANDE [*OPTIONS*]...
+abuseipdb *COMMAND* [*OPTIONS*]...
 
 # DESCRIPTION
 
 **abuseipdb** is a client for AbuseIPDB API v2. You can use it to check IP addresses or subnet, 
-report IP addressess, clear your report for a given IP, or download blacklist. 
+report IP addresses, clear your reports for a given IP, or download blacklist. It supports IPv4 
+or IPv6.
 
-# COMMANDES
+# COMMANDS
 
 -h, \--help
 :   Displays a short-help text and exits.
