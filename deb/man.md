@@ -33,7 +33,7 @@ or IPv6.
 -R *IP*, \--report *IP*
 :   Performs a report request for the given IP address. A valid IPv4 or IPv6 address is required.
 
--V *FILE*, \--bulk-report FILE
+-V *FILE*, \--bulk-report *FILE*
 :   Performs a bulk-report request sending a csv file. A valid file name or full path is required.
 
 -E *IP*, \--clear *IP*

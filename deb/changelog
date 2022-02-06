@@ -1,39 +1,49 @@
-abuseipdb-client (0.9.17+deb11u1) unstable; urgency=low
+abuseipdb-client (0.9.18) unstable; urgency=medium
 
-  * Improve/fix package
-     Fix typos in man page, files permissions, scripts error reporting
-     php-cli is now the dependency (instead of php)
-     conf.ini under /etc now marqued as conffile
+  * Change: minor change in chaeck report when total reports is 0
+    and lastReportedAt field is not null (could happen when deleting
+    report)
+  * Include Fail2ban action file (abuseipdb.local) in package
+  * Update dependency
 
- -- kristuff <kristuff@kristuff.fr>  Thu, 09 Dec 2021 19:00:00 +0100
+ -- kristuff <kristuff@kristuff.fr>  Wed, 26 Jan 2022 19:00:00 +0200
 
-abuseipdb-client (0.9.17) unstable; urgency=low
+abuseipdb-client (0.9.17+deb11u1) unstable; urgency=medium
+
+  * Improve/fix package:
+    Fix typos in man page, files permissions, scripts error reporting
+    php-cli is now the dependency (instead of php)
+    conf.ini under /etc now marked as conffile
+
+ -- kristuff <kristuff@kristuff.fr>  Thu, 09 Dec 2021 19:00:00 +0200
+
+abuseipdb-client (0.9.17) unstable; urgency=medium
 
   * New feature: timeout for all cURL request can be defined in conf.ini
     or from command line using the -t, --timeout option. Timeout is expressed
     in milliseconds.
   * A man page is now available  
 
- -- kristuff <kristuff@kristuff.fr>  Tue, 07 Dec 2021 19:00:00 +0100
+ -- kristuff <kristuff@kristuff.fr>  Tue, 07 Dec 2021 19:00:00 +0200
 
-abuseipdb-client (0.9.16) unstable; urgency=low
+abuseipdb-client (0.9.16) unstable; urgency=medium
 
   * Fix php doc, typo, formatting in source code
   * Include composer.json and composer.lock in .deb package
 
- -- kristuff <kristuff@kristuff.fr>  Sun, 28 Nov 2021 19:00:00 +0100
+ -- kristuff <kristuff@kristuff.fr>  Sun, 28 Nov 2021 19:00:00 +0200
 
-abuseipdb-client (0.9.15) unstable; urgency=low
+abuseipdb-client (0.9.15) unstable; urgency=medium
 
   * Break change Configuration is now in INI format and located in a conf.ini file 
     (with possible override in a local.ini file) instead of json files. 
   * The save-key command has been removed.
   * When installing the .deb package, config is now located in /etc/abuseipdb-client/
 
- -- kristuff <kristuff@kristuff.fr>  Tue, 23 Nov 2021 19:00:00 +0100
+ -- kristuff <kristuff@kristuff.fr>  Tue, 23 Nov 2021 19:00:00 +0200
 
-abuseipdb-client (0.9.14) unstable; urgency=low
+abuseipdb-client (0.9.14) unstable; urgency=medium
 
   * Initial release
 
- -- kristuff <kristuff@kristuff.fr>  Wed, 10 Nov 2021 19:00:00 +0100
+ -- kristuff <kristuff@kristuff.fr>  Wed, 10 Nov 2021 19:00:00 +0200

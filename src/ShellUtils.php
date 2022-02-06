@@ -13,8 +13,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.17
- * @copyright  2020-2021 Kristuff
+ * @version    0.9.18
+ * @copyright  2020-2022 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
 
@@ -150,7 +150,7 @@ abstract class ShellUtils
         Console::log(Console::text('  Released under the MIT licence', 'darkgray'));
         Console::log(Console::text('  Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France', 'darkgray'));
         Console::log(
-            Console::text('  © 2020-2021 Kristuff (', 'darkgray').
+            Console::text('  © 2020-2022 Kristuff (', 'darkgray').
             Console::text('https://github.com/kristuff', 'darkgray', 'underlined').
             Console::text(')', 'darkgray')
         );
@@ -172,7 +172,7 @@ abstract class ShellUtils
             Console::log();    
             Console::log( Console::text(' Kristuff/AbuseIPDB-client ', 'darkgray') . Console::text(' ' . AbuseIPDBClient::VERSION . ' ', 'white', 'blue')); 
             Console::log(Console::text(' Made with ', 'darkgray') . Console::text('♥', 'red') . Console::text(' in France', 'darkgray')); 
-            Console::log(Console::text(' © 2020-2021 Kristuff (', 'darkgray').
+            Console::log(Console::text(' © 2020-2022 Kristuff (', 'darkgray').
                 Console::text('https://github.com/kristuff', 'darkgray', 'underlined').
                 Console::text(')', 'darkgray')
             );
@@ -204,7 +204,7 @@ abstract class ShellUtils
                 Console::text(AbuseIPDBClient::VERSION, 'lightgray') . 
                 Console::text(' | Made with ', 'darkgray') . 
                 Console::text('♥', 'red') .
-                Console::text(' in France | © 2020-2021 Kristuff (https://github.com/kristuff)', 'darkgray')
+                Console::text(' in France | © 2020-2022 Kristuff (https://github.com/kristuff)', 'darkgray')
             ); 
             Console::log(); 
         }   

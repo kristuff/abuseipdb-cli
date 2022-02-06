@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7c747fd2936535a7360589ba62f1b7f",
+    "content-hash": "34026614b73f273a38bf32e4512291e8",
     "packages": [
         {
             "name": "kristuff/abuseipdb",
-            "version": "v0.9.14",
+            "version": "v1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kristuff/abuseipdb.git",
-                "reference": "d1d9cf9ad0fcac083e4c24aa009850e43e83cf24"
+                "reference": "5639f1813a7be889c9028f722e9fe252bac34df1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kristuff/abuseipdb/zipball/d1d9cf9ad0fcac083e4c24aa009850e43e83cf24",
-                "reference": "d1d9cf9ad0fcac083e4c24aa009850e43e83cf24",
+                "url": "https://api.github.com/repos/kristuff/abuseipdb/zipball/5639f1813a7be889c9028f722e9fe252bac34df1",
+                "reference": "5639f1813a7be889c9028f722e9fe252bac34df1",
                 "shasum": ""
             },
             "require": {
@@ -48,9 +48,9 @@
             ],
             "support": {
                 "issues": "https://github.com/kristuff/abuseipdb/issues",
-                "source": "https://github.com/kristuff/abuseipdb/tree/v0.9.14"
+                "source": "https://github.com/kristuff/abuseipdb/tree/v1.0"
             },
-            "time": "2021-12-06T20:40:39+00:00"
+            "time": "2022-01-26T21:24:24+00:00"
         },
         {
             "name": "kristuff/mishell",

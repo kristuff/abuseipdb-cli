@@ -18,6 +18,7 @@ Features
 - Clear IP address request (remove your own reports) **✓**
 - Auto cleaning report comments from sensitive data (email, custom ip/domain names list)  **✓** 
 - Output: colored reports, JSON or plaintext **✓** 
+- Define timeout for cURL internal requests (in config or from command line) **✓**
 - Easy Fail2ban integration **✓** 
 
 Requirements
@@ -64,7 +65,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2020-2021 Kristuff
+Copyright (c) 2020-2022 Kristuff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
