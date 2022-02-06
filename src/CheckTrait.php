@@ -13,8 +13,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.17
- * @copyright  2020-2021 Kristuff
+ * @version    0.9.18
+ * @copyright  2020-2022 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
 
@@ -107,8 +107,17 @@ trait CheckTrait
 
         } else {
             // no reports
-            $day = $maxAge > 1 ? 'in last '. $maxAge . ' days': ' today';
-            Console::log( Console::text('   ✓', 'green') . Console::text(' Not reported ' . $day));
+            $period = $maxAge > 1 ? 'in last '. $maxAge . ' days': ' today';
+            if (empty($response->data->lastReportedAt)){
+                Console::log( Console::text('   ✓', 'green') . Console::text(' Not reported ' . $period));
+            
+            } else {
+                // in some case, we have no reports but lastReportedAt in not empty (when deleting reports for example)
+                // maybe a bug or cache in api 
+                // In this case Set total 0 and let print lastReportedAt
+                $line  = self::printResult(Console::pad('   Total reports:', 23), $nbReport, $color, '', false);
+                Console::log($line);
+            }
         }
         
         if (!empty($response->data->lastReportedAt)){
