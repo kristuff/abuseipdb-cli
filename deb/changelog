@@ -1,6 +1,13 @@
+abuseipdb-client (0.9.19) unstable; urgency=medium
+
+  * Update dependencies (improve email pattern when cleaning report
+    message)
+
+ -- kristuff <kristuff@kristuff.fr>  Thu, 06 Oct 2022 13:00:00 +0200
+
 abuseipdb-client (0.9.18) unstable; urgency=medium
 
-  * Change: minor change in chaeck report when total reports is 0
+  * Change: minor change in check report when total reports is 0
     and lastReportedAt field is not null (could happen when deleting
     report)
   * Include Fail2ban action file (abuseipdb.local) in package

@@ -13,7 +13,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @version    0.9.18
+ * @version    0.9.19
  * @copyright  2020-2022 Kristuff
  */
 namespace Kristuff\AbuseIPDB;
@@ -34,14 +34,14 @@ abstract class AbstractClient extends ShellErrorHandler
     const SHORT_ARGUMENTS = "o:GLBK:C:d:R:c:m:l:E:V:hvs:t:";
 
     /**
-     * @var string      
+     * @var array      
      */
     const LONG_ARGUMENTS = ['output:', 'config', 'list', 'blacklist', 'check:', 'check-block:', 'days:', 'report:', 'categories:', 'message:', 'limit:', 'clear:',' bulk-report:', 'help', 'verbose', 'score:', 'version', 'timeout:'];
     
     /**
      * @var string
      */
-    const VERSION = 'v0.9.18'; 
+    const VERSION = 'v0.9.19'; 
 
     /**
      * @var QuietApiHandler

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # make sure we are in current directory as the script may be run from another location
 # to use relative path 
 #cd `dirname $0`
@@ -59,5 +61,4 @@ chmod 755 debian/DEBIAN/postinst
 chmod 755 debian/DEBIAN/prerm
 
 # finally build the package
-dpkg-deb --root-owner-group --build debian . 
-#dist
+dpkg-deb --root-owner-group --build debian dist
