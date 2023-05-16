@@ -23,8 +23,8 @@ Features
 
 Requirements
 ------------
-- PHP >= 7.1
-- PHP's cURL  
+- PHP version: >= 7.1
+- PHP's modules: `php-curl`, `php-mbstring`  
 - A valid [abuseipdb.com](https://abuseipdb.com) account with an API key
 - Composer for install (not required if you install the `.deb` package)
 
