@@ -35,11 +35,11 @@ Dependencies
 
 More infos
 ----------
-- [Project website](https://kristuff.fr/projects/abuseipdbcli)
-- [Api documentation](https://kristuff.fr/projects/abuseipdbcli/doc)
-- [Install](https://kristuff.fr/projects/abuseipdbcli/technical#install)
-- [Config guide](https://kristuff.fr/projects/abuseipdbcli/technical#configuration)
-- [Fail2ban integration](https://kristuff.fr/projects/abuseipdbcli/technical#fail2ban)
+
+- [Api documentation](/doc/doc.md)
+- [Install](/doc/technical.md#install)
+- [Config guide](/doc/technical.md#configuration)
+- [Fail2ban integration](/doc/technical.md#fail2ban-integration)
 
 Screenshots
 -----------
