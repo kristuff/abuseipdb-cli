@@ -37,11 +37,11 @@ option            |  Description
 
 ### 1.3. Report categories 
 
-For [report](#report) and [bulk-report](#bulkreport), you must define one or more report **category**. Some categories, for example ***ssh*** (22), cannot be used alone. 
+For [report](#23-report-a-single-ip-address) and [bulk-report](#24-bulk-report-ip-addresses), you must define one or more report **category**. Some categories, for example ***ssh*** (22), cannot be used alone. 
 
-For [report](#report) command, a category can be represented by its **shortname** or by its **id**. When you use the [bulk-report](#bulkreport) command, you **must** use the **id**.
+For [report](#23-report-a-single-ip-address) command, a category can be represented by its **shortname** or by its **id**. When you use the [bulk-report](#24-bulk-report-ip-addresses) command, you **must** use the **id**.
 
-***Categories list*** must be separate by a comma. For [report](#report) command, categories list may have no quote (18,22). When using [bulkreport](#bulkreport), categories list **requires** double quotes to include commas ("18,22").
+***Categories list*** must be separate by a comma. For [report](#23-report-a-single-ip-address) command, categories list may have no quote (18,22). When using [bulkreport](#24-bulk-report-ip-addresses), categories list **requires** double quotes to include commas ("18,22").
 
 You can print the categories list with:
 
@@ -165,9 +165,9 @@ abuseipdb --check 127.0.0.1 --verbose --limit 20
 <details>
  <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-![sample-check-internal-ip](doc/sample-check-internal-ip.png)
+![sample-check-internal-ip](/doc/sample-check-internal-ip.png)
 
-![sample-check-bad-ip](doc/sample-check-bad-ip.png)
+![sample-check-bad-ip](/doc/sample-check-bad-ip.png)
 
 </details>
 
@@ -191,7 +191,7 @@ By default, the last reports are checked on last **30** days, you can increase t
 
 Like in any API request, you can overwrite the default **timeout** value (expressed in milliseconds) with the `-t` | `--timeout` option.
 
-#### 2.2.2 Check-block Limits {#checkblock_limits}
+#### 2.2.2 Check-block Limits
 
 Due to the depth & breath of the these searches, the range of the parameters is capped by plan tier.
 
@@ -231,9 +231,9 @@ abuseipdb --check-block 127.0.0.1/24 --days 15 --limit 10
 <details>
  <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-![sample-checkblock-internal-ip](doc/sample-checkblock-internal-ip.png)
+![sample-checkblock-internal-ip](/doc/sample-checkblock-internal-ip.png)
 
-![sample-checkblock-bad-ip](doc/sample-checkblock-bad-ip.png)
+![sample-checkblock-bad-ip](/doc/sample-checkblock-bad-ip.png)
 
 </details>
 
@@ -262,7 +262,7 @@ You must set :
 
 Like in any API request, you can overwrite the default **timeout** value (expressed in milliseconds) with the `-t` | `--timeout` option.
 
-#### 2.3.2 Reports Usage {#report_usage}
+#### 2.3.2 Reports Usage 
 
 Report the ip `127.0.0.1` for `ssh` and `brute` with message `ssh brute force message` using **categories shortname**: 
 
@@ -281,7 +281,7 @@ abuseipdb -R 127.0.0.1  -c 22,18  -m "ssh brute force message"
 <details>
  <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-![sample-report-internal-ip](doc/sample-report-internal-ip.png)
+![sample-report-internal-ip](/doc/sample-report-internal-ip.png)
 
 </details>
 
@@ -356,16 +356,16 @@ abuseipdb --bulk-report "reports.csv"
 <details>
  <summary>Here is a sample output for this command (Click to see screenshot):</summary>
 
-![sample-bulk-report](doc/sample-bulk-report.png)
+![sample-bulk-report](/doc/sample-bulk-report.png)
 
 </details>
 
 
-### 2.5 Remove own reports for an IP address {#clear}
+### 2.5 Remove own reports for an IP address 
 
 You can delete reports for a specific address from **YOUR** account using the `--clear` | `-E` command. It cannot delete another user's reports. 
 
-#### 2.5.1 Clear Address Synopsis {#clear_synopsis}
+#### 2.5.1 Clear Address Synopsis 
 
 ```.bash
 abuseipdb -E <IP> [-o <FORMAT>] [-t <TIMEOUT>]
@@ -378,7 +378,7 @@ The only property it returns is the number of reports deleted from your account.
 
 Like in any API request, you can overwrite the default **timeout** value (expressed in milliseconds) with the `-t` | `--timeout` option.
 
-#### 2.5.2 Clear Address Usage {#clear_usage}
+#### 2.5.2 Clear Address Usage 
 
 Remove own reports for IP `127.0.0.1`:
 
@@ -389,7 +389,7 @@ abuseipdb -E 127.0.0.1
 <details>
  <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-![sample-sample-clear-internal-ip](doc/sample-clear-internal-ip.png)
+![sample-sample-clear-internal-ip](/doc/sample-clear-internal-ip.png)
 
 </details>
 
@@ -460,7 +460,7 @@ The **default** confidence score is **100**, you can change mimimum condidence s
     <details>
     <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-    ![sample-blacklist](doc/sample-blacklist.png)
+    ![sample-blacklist](/doc/sample-blacklist.png)
 
     </details>
 
@@ -475,7 +475,7 @@ The **default** confidence score is **100**, you can change mimimum condidence s
     <details>
     <summary>Here are sample outputs for this command (Click to see screenshots):</summary>
 
-    ![sample-blacklist-plaintext](doc/sample-blacklist-plaintext.png)
+    ![sample-blacklist-plaintext](/doc/sample-blacklist-plaintext.png)
 
     </details>
 
